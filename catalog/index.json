@@ -1,6 +1,28 @@
 {
   "format": "perfcomparator-community-catalog",
   "format_version": 1,
-  "report_count": 0,
-  "reports": []
+  "report_count": 1,
+  "reports": [
+    {
+      "benchmark_count": 16,
+      "failed_benchmark_count": 0,
+      "path": "reports/protocol-0.3.0/225ed75a154a3f7160d728ec2ea74658309363b67450bc021ee35feceb286707.json",
+      "profile": "quick",
+      "protocol_version": "0.3.0",
+      "report_id": "sha256:225ed75a154a3f7160d728ec2ea74658309363b67450bc021ee35feceb286707",
+      "suite_version": "0.3.0.dev2",
+      "system": {
+        "architecture": "x86_64",
+        "gpu_devices": [
+          "Intel UHD Graphics 630",
+          "Radeon Pro 560X"
+        ],
+        "logical_cpu_count": 12,
+        "memory_bytes": 34359738368,
+        "operating_system": "Darwin",
+        "physical_cpu_count": 6,
+        "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz"
+      }
+    }
+  ]
 }
