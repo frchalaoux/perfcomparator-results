@@ -29,6 +29,12 @@ marques différentes.
 
 ## Ajouter un rapport
 
+Le [guide de contribution](CONTRIBUTING.md) fournit la procédure de pull
+request. Le
+[tutoriel de A à Z](https://github.com/frchalaoux/perfcomparator/blob/main/docs/tutoriel-catalogue.md)
+couvre aussi l'installation, la mesure, la publication, le téléchargement et
+la comparaison locale.
+
 Créer et contrôler le fichier avec une version de PerfComparator qui fournit
 les commandes publiques :
 
@@ -65,8 +71,7 @@ Deux workflows sont préparés avec des actions épinglées par SHA :
   déploiement.
 
 Tous deux installent le validateur depuis une révision exacte de
-`frchalaoux/perfcomparator`. Ils ne deviendront exécutables qu'après publication
-de cette révision et création explicite du dépôt distant.
+`frchalaoux/perfcomparator`.
 
 ## Prévisualiser le site
 
