@@ -1,0 +1,396 @@
+{
+  "failed_benchmarks": [],
+  "format": "perfcomparator-public-report",
+  "format_version": 1,
+  "license": "CC0-1.0",
+  "profile": "standard",
+  "protocol_version": "0.3.0",
+  "readiness_suitable": false,
+  "repetitions": 3,
+  "report_id": "sha256:ca134d65ca799de90fd2c69aea9bde4bb077958b9d9994a651e0a7e9b2d75efe",
+  "requested_benchmarks": [
+    "cpu.integer",
+    "cpu.float",
+    "cpu.hash",
+    "cpu.compression",
+    "cpu.multicore",
+    "memory.copy",
+    "storage.write",
+    "storage.read",
+    "storage.random-read",
+    "storage.random-write",
+    "application.json",
+    "application.sqlite",
+    "gpu.compute-fp32",
+    "gpu.memory",
+    "gpu.image-filter",
+    "gpu.raster"
+  ],
+  "results": [
+    {
+      "benchmark_id": "cpu.integer",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 6.862176944562372,
+      "minimum": 6.816709367272282,
+      "name": "Entiers mono-cœur",
+      "parameters": {
+        "workers": 1
+      },
+      "relative_spread_percent": 0.6660711797626575,
+      "repetitions": 3,
+      "sample_values": [
+        6.816709367272282,
+        6.862176944562372,
+        6.826233992933223
+      ],
+      "unit": "Mop/s",
+      "value": 6.826233992933223
+    },
+    {
+      "benchmark_id": "cpu.float",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 10.88873871698762,
+      "minimum": 10.861538840079513,
+      "name": "Flottants mono-cœur",
+      "parameters": {
+        "workers": 1
+      },
+      "relative_spread_percent": 0.2503526594555238,
+      "repetitions": 3,
+      "sample_values": [
+        10.864624712700012,
+        10.861538840079513,
+        10.88873871698762
+      ],
+      "unit": "Mop/s",
+      "value": 10.864624712700012
+    },
+    {
+      "benchmark_id": "cpu.hash",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 1533.63997786263,
+      "minimum": 1532.8523354092447,
+      "name": "SHA-256",
+      "parameters": {
+        "block_size_bytes": 1048576
+      },
+      "relative_spread_percent": 0.0513713839069089,
+      "repetitions": 3,
+      "sample_values": [
+        1532.8523354092447,
+        1533.63997786263,
+        1533.231915287099
+      ],
+      "unit": "Mio/s",
+      "value": 1533.231915287099
+    },
+    {
+      "benchmark_id": "cpu.compression",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 38.734000724426714,
+      "minimum": 38.52272748711167,
+      "name": "Compression zlib",
+      "parameters": {
+        "block_size_bytes": 1048576,
+        "compression_level": 6
+      },
+      "relative_spread_percent": 0.545927178249086,
+      "repetitions": 3,
+      "sample_values": [
+        38.52272748711167,
+        38.69989363648145,
+        38.734000724426714
+      ],
+      "unit": "Mio/s",
+      "value": 38.69989363648145
+    },
+    {
+      "benchmark_id": "cpu.multicore",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 40.42635951251247,
+      "minimum": 39.03631490294694,
+      "name": "Entiers multicœur",
+      "parameters": {
+        "workers": 10
+      },
+      "relative_spread_percent": 3.5169134916510325,
+      "repetitions": 3,
+      "sample_values": [
+        40.42635951251247,
+        39.03631490294694,
+        39.52456075093747
+      ],
+      "unit": "Mop/s",
+      "value": 39.52456075093747
+    },
+    {
+      "benchmark_id": "memory.copy",
+      "group": "memory",
+      "higher_is_better": true,
+      "maximum": 27229.351790281413,
+      "minimum": 26530.472699473783,
+      "name": "Copie mémoire",
+      "parameters": {
+        "buffer_size_bytes": 67108864
+      },
+      "relative_spread_percent": 2.5882740518652394,
+      "repetitions": 3,
+      "sample_values": [
+        26530.472699473783,
+        27001.742350427798,
+        27229.351790281413
+      ],
+      "unit": "Mio/s",
+      "value": 27001.742350427798
+    },
+    {
+      "benchmark_id": "storage.write",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 971.8861714910875,
+      "minimum": 912.2261481063128,
+      "name": "Écriture séquentielle",
+      "parameters": {
+        "file_size_bytes": 134217728
+      },
+      "relative_spread_percent": 6.407999206646919,
+      "repetitions": 3,
+      "sample_values": [
+        912.2261481063128,
+        971.8861714910875,
+        931.0242005474997
+      ],
+      "unit": "Mio/s",
+      "value": 931.0242005474997
+    },
+    {
+      "benchmark_id": "storage.read",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 9694.430102055392,
+      "minimum": 7375.820983425958,
+      "name": "Lecture séquentielle",
+      "parameters": {
+        "file_size_bytes": 134217728
+      },
+      "relative_spread_percent": 24.19829501381466,
+      "repetitions": 3,
+      "sample_values": [
+        7375.820983425958,
+        9581.704484988526,
+        9694.430102055392
+      ],
+      "unit": "Mio/s",
+      "value": 9581.704484988526
+    },
+    {
+      "benchmark_id": "storage.random-read",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 468524.82461308094,
+      "minimum": 379763.27917063615,
+      "name": "Lecture aléatoire 4 Kio",
+      "parameters": {
+        "block_size_bytes": 4096,
+        "operations": 4096
+      },
+      "relative_spread_percent": 20.018121315033234,
+      "repetitions": 3,
+      "sample_values": [
+        468524.82461308094,
+        379763.27917063615,
+        443405.972246689
+      ],
+      "unit": "IOPS",
+      "value": 443405.972246689
+    },
+    {
+      "benchmark_id": "storage.random-write",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 10523.638362863747,
+      "minimum": 9661.495809791191,
+      "name": "Écriture aléatoire 4 Kio",
+      "parameters": {
+        "block_size_bytes": 4096,
+        "operations": 4096
+      },
+      "relative_spread_percent": 8.544205081620355,
+      "repetitions": 3,
+      "sample_values": [
+        10090.37756978857,
+        10523.638362863747,
+        9661.495809791191
+      ],
+      "unit": "IOPS",
+      "value": 10090.37756978857
+    },
+    {
+      "benchmark_id": "application.json",
+      "group": "application",
+      "higher_is_better": true,
+      "maximum": 134.37162226375156,
+      "minimum": 133.10337678273254,
+      "name": "JSON",
+      "parameters": {
+        "document_size_bytes": 234608
+      },
+      "relative_spread_percent": 0.9492885644929125,
+      "repetitions": 3,
+      "sample_values": [
+        133.599574297673,
+        133.10337678273254,
+        134.37162226375156
+      ],
+      "unit": "cycles/s",
+      "value": 133.599574297673
+    },
+    {
+      "benchmark_id": "application.sqlite",
+      "group": "application",
+      "higher_is_better": true,
+      "maximum": 1049568.0673167538,
+      "minimum": 741607.0970906455,
+      "name": "SQLite",
+      "parameters": {
+        "rows": 20000
+      },
+      "relative_spread_percent": 29.985260833085743,
+      "repetitions": 3,
+      "sample_values": [
+        741607.0970906455,
+        1027041.1584557708,
+        1049568.0673167538
+      ],
+      "unit": "lignes/s",
+      "value": 1027041.1584557708
+    },
+    {
+      "benchmark_id": "gpu.compute-fp32",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 287.07245706101156,
+      "minimum": 159.305295585084,
+      "name": "Calcul GPU FP32",
+      "parameters": {
+        "element_count": 262144,
+        "gpu_adapter_type": "IntegratedGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "Apple M4",
+        "gpu_index": 0,
+        "operations_per_element": 256,
+        "wgpu_version": "0.32.0"
+      },
+      "relative_spread_percent": 49.93073150408244,
+      "repetitions": 3,
+      "sample_values": [
+        159.305295585084,
+        287.07245706101156,
+        255.88882363055518
+      ],
+      "unit": "GFLOP/s",
+      "value": 255.88882363055518
+    },
+    {
+      "benchmark_id": "gpu.memory",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 78.99476492719938,
+      "minimum": 49.17364312593443,
+      "name": "Bande passante GPU",
+      "parameters": {
+        "buffer_size_bytes": 33554432,
+        "bytes_counted_per_element": 8,
+        "gpu_adapter_type": "IntegratedGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "Apple M4",
+        "gpu_index": 0,
+        "wgpu_version": "0.32.0"
+      },
+      "relative_spread_percent": 41.73824725784136,
+      "repetitions": 3,
+      "sample_values": [
+        78.99476492719938,
+        71.4479494480029,
+        49.17364312593443
+      ],
+      "unit": "Gio/s",
+      "value": 71.4479494480029
+    },
+    {
+      "benchmark_id": "gpu.image-filter",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 11783.088642902094,
+      "minimum": 9558.092934026172,
+      "name": "Filtre d'image GPU",
+      "parameters": {
+        "gpu_adapter_type": "IntegratedGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "Apple M4",
+        "gpu_index": 0,
+        "height": 1024,
+        "samples_per_pixel": 5,
+        "wgpu_version": "0.32.0",
+        "width": 1024
+      },
+      "relative_spread_percent": 23.163582174528106,
+      "repetitions": 3,
+      "sample_values": [
+        9605.57694449628,
+        9558.092934026172,
+        11783.088642902094
+      ],
+      "unit": "Mpixel/s",
+      "value": 9605.57694449628
+    },
+    {
+      "benchmark_id": "gpu.raster",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 325121.6905355079,
+      "minimum": 13516.138985750767,
+      "name": "Remplissage raster GPU",
+      "parameters": {
+        "color_format": "rgba8unorm",
+        "gpu_adapter_type": "IntegratedGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "Apple M4",
+        "gpu_index": 0,
+        "height": 1024,
+        "wgpu_version": "0.32.0",
+        "width": 1024
+      },
+      "relative_spread_percent": 95.94423277771685,
+      "repetitions": 3,
+      "sample_values": [
+        13516.138985750767,
+        324777.78239332367,
+        325121.6905355079
+      ],
+      "unit": "Mpixel/s",
+      "value": 324777.78239332367
+    }
+  ],
+  "source_schema_version": 4,
+  "suite_version": "0.3.1.dev0",
+  "system": {
+    "architecture": "arm64",
+    "gpu_devices": [
+      "Apple M4"
+    ],
+    "logical_cpu_count": 10,
+    "memory_bytes": 25769803776,
+    "operating_system": "Darwin",
+    "physical_cpu_count": 10,
+    "processor": "Apple M4",
+    "python_implementation": "CPython",
+    "python_version": "3.14.4"
+  },
+  "verification": "community-unverified"
+}
