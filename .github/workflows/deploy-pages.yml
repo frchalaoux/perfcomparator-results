@@ -31,7 +31,7 @@ jobs:
 
       - name: Install the pinned PerfComparator validator
         run: |
-          uv tool install "git+https://github.com/frchalaoux/perfcomparator@efdf69e242d0fd160853f43cb5edf5a7756e9f9a"
+          uv tool install "git+https://github.com/frchalaoux/perfcomparator@1b75152165c643660ecdd46742b98d7156fe4981"
           echo "$(uv tool dir --bin)" >> "$GITHUB_PATH"
 
       - name: Validate the catalog
