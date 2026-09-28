@@ -28,6 +28,18 @@ connecter ou créer le compte GitHub. Il demande une confirmation distincte
 avant de créer ou réutiliser le fork, créer la branche distante et ouvrir la
 pull request.
 
+Le message **Contribution envoyée** signifie que la pull request a été créée.
+Le dépôt vérifie ensuite automatiquement le rapport. Si le contrôle réussit et
+si la pull request contient uniquement un nouveau rapport et
+`catalog/index.json`, elle est fusionnée automatiquement, puis GitHub Pages est
+redéployé. Le rapport apparaît alors dans le
+[catalogue web](https://frchalaoux.github.io/perfcomparator-results/). Une
+validation en échec laisse la pull request ouverte afin que son erreur puisse
+être corrigée.
+Pour une première contribution provenant d'un fork, GitHub peut demander au
+mainteneur d'autoriser le démarrage du contrôle. Une fois `validate` lancé, la
+fusion et le déploiement ne demandent plus d'intervention.
+
 Un essai sans connexion ni modification GitHub est disponible :
 
 ```bash
@@ -81,8 +93,11 @@ git push -u origin add/community-report
 ```
 
 Ouvrez ensuite une pull request vers `frchalaoux/perfcomparator-results:main`.
-Son workflow exécute les mêmes contrôles sans secret et avec un accès en
-lecture seule au contenu.
+Son premier workflow exécute les mêmes contrôles sans secret et avec un accès
+en lecture seule au contenu. Un second workflow privilégié ne charge aucun code
+de la contribution : il consulte la pull request par API, vérifie qu'elle ne
+contient que les deux fichiers autorisés et que son commit n'a pas changé, puis
+la fusionne et demande le déploiement Pages.
 
 ## Critères de refus courants
 
@@ -93,6 +108,11 @@ lecture seule au contenu.
 - index non régénéré ;
 - fichier de plus de 2 Mio.
 
-Une fois fusionné, le rapport est publié sur le
-[catalogue statique](https://frchalaoux.github.io/perfcomparator-results/) et
-peut être téléchargé puis comparé localement avec `perfcomparator compare`.
+Une fois le déploiement terminé, ouvrir le
+[catalogue statique](https://frchalaoux.github.io/perfcomparator-results/),
+cliquer sur **Télécharger le JSON**, puis comparer localement :
+
+```bash
+perfcomparator compare mon-rapport-local.json rapport-telecharge.json \
+  --html comparaison.html
+```
