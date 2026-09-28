@@ -45,6 +45,29 @@ perfcomparator contribute
 `perfcomparator contribute --dry-run` permet de contrôler localement l'export
 et son aperçu sans se connecter à GitHub.
 
+La commande affiche **Contribution envoyée** dès que la pull request existe.
+Le rapport n'est pas encore visible à cet instant. Le dépôt enchaîne ensuite
+automatiquement la validation, la fusion des contributions qui ne contiennent
+que le rapport et l'index généré, puis le déploiement GitHub Pages. Une
+contribution refusée reste ouverte avec son contrôle en erreur.
+Pour la première contribution d'un compte externe, la politique de sécurité de
+GitHub peut demander au mainteneur d'autoriser le démarrage du contrôle. Après
+ce contrôle initial, la fusion et le déploiement restent automatiques.
+
+## Télécharger et comparer
+
+Ouvrir le [catalogue web](https://frchalaoux.github.io/perfcomparator-results/),
+filtrer si nécessaire, puis cliquer sur **Télécharger le JSON** dans la fiche
+choisie. Comparer ensuite ce fichier avec un rapport local compatible :
+
+```bash
+perfcomparator compare mon-rapport-local.json rapport-telecharge.json \
+  --html comparaison.html
+```
+
+Le premier fichier sert de référence 100. Les rapports doivent employer le
+même protocole, le même profil et la même version de Python.
+
 Le parcours manuel reste disponible en créant et contrôlant le fichier avec une
 version de PerfComparator qui fournit les commandes publiques :
 
@@ -76,9 +99,16 @@ Deux workflows sont préparés avec des actions épinglées par SHA :
 
 - `validate-reports.yml` s'exécute sur `pull_request`, sans secret et avec le
   seul droit `contents: read` ;
+- `auto-merge-reports.yml` s'exécute depuis `main` après une validation réussie,
+  refuse toute modification autre qu'un nouveau rapport et l'index, vérifie que
+  le commit validé est toujours en tête, puis fusionne la pull request ;
 - `deploy-pages.yml` revalide le catalogue sur `main`, assemble `_site`, puis
   demande uniquement `pages: write` et `id-token: write` dans son job de
   déploiement.
+
+La fusion réalisée avec le jeton éphémère de GitHub Actions ne déclenchant pas
+un second workflow par événement `push`, l'automatisation demande explicitement
+le lancement de `deploy-pages.yml` par `workflow_dispatch`.
 
 Tous deux installent le validateur depuis une révision exacte de
 `frchalaoux/perfcomparator`.
