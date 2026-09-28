@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Catalogue communautaire de rapports PerfComparator non certifiés.">
+    <title>PerfComparator — Rapports communautaires</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="nav" aria-label="Navigation principale">
+        <a class="brand" href="./" aria-label="Accueil PerfComparator Community Reports">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span>PerfComparator</span>
+        </a>
+        <a class="nav-link" href="https://github.com/frchalaoux/perfcomparator">Projet source</a>
+      </nav>
+
+      <div class="hero-content">
+        <p class="eyebrow">Données ouvertes · Comparaisons locales</p>
+        <h1>Explorer les performances.<br><span>Garder le contexte.</span></h1>
+        <p class="hero-copy">
+          Des rapports publics PerfComparator à télécharger et comparer sur votre machine.
+          Le catalogue valide leur format, jamais leur authenticité.
+        </p>
+      </div>
+    </header>
+
+    <main>
+      <section class="notice" aria-labelledby="notice-title">
+        <span class="notice-icon" aria-hidden="true">!</span>
+        <div>
+          <h2 id="notice-title">Rapports communautaires non certifiés</h2>
+          <p>
+            Les scores peuvent être inexacts ou falsifiés. Vérifiez les conditions de mesure et
+            reproduisez les comparaisons importantes avant une décision d’achat.
+          </p>
+        </div>
+      </section>
+
+      <section class="catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Catalogue public</p>
+            <h2 id="catalog-title">Trouver une configuration</h2>
+          </div>
+          <dl class="stats" aria-label="Résumé du catalogue">
+            <div><dt>Rapports</dt><dd id="report-count">—</dd></div>
+            <div><dt>Systèmes</dt><dd id="system-count">—</dd></div>
+            <div><dt>Protocole</dt><dd id="protocol-count">—</dd></div>
+          </dl>
+        </div>
+
+        <form class="filters" id="filters" role="search">
+          <label class="search-field">
+            <span>Rechercher</span>
+            <input id="query" type="search" placeholder="Processeur, GPU, architecture…" autocomplete="off">
+          </label>
+          <label>
+            <span>Système</span>
+            <select id="operating-system"><option value="">Tous</option></select>
+          </label>
+          <label>
+            <span>Profil</span>
+            <select id="profile"><option value="">Tous</option></select>
+          </label>
+          <button type="reset">Réinitialiser</button>
+        </form>
+
+        <div class="results-heading">
+          <p id="results-summary" aria-live="polite">Chargement du catalogue…</p>
+        </div>
+        <div id="results" class="report-grid" aria-busy="true"></div>
+        <noscript>JavaScript est nécessaire pour filtrer et afficher le catalogue.</noscript>
+      </section>
+
+      <section class="how-it-works" aria-labelledby="how-title">
+        <p class="eyebrow">Mode d’emploi</p>
+        <h2 id="how-title">Comparer sans envoyer vos données</h2>
+        <ol>
+          <li><span>01</span><div><h3>Choisir</h3><p>Filtrez le catalogue selon le matériel et le profil mesuré.</p></div></li>
+          <li><span>02</span><div><h3>Télécharger</h3><p>Récupérez uniquement les rapports publics utiles.</p></div></li>
+          <li><span>03</span><div><h3>Comparer</h3><p>Analysez-les localement avec PerfComparator, sans compte ni télémétrie.</p></div></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <p>Catalogue statique · Données CC0-1.0 · Format validé, performances non certifiées</p>
+    </footer>
+
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

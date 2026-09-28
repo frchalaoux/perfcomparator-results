@@ -14,6 +14,8 @@ catalog/
 └── index.json
 scripts/
 └── build_catalog.py
+site/
+└── index.html
 ```
 
 Le rangement est fondé sur le protocole, puis sur l'identifiant de contenu. Il
@@ -52,3 +54,21 @@ suivi correspond exactement aux rapports présents.
 Le dépôt local ne contient encore aucun workflow GitHub : celui-ci sera ajouté
 seulement quand une révision publiquement installable de PerfComparator offrira
 le validateur, afin de ne pas référencer une branche ou un commit inexistant.
+
+## Prévisualiser le site
+
+Le site est statique et charge directement `catalog/index.json`. Depuis la
+racine du dépôt :
+
+```bash
+python -m http.server 8000
+```
+
+Ouvrir ensuite `http://localhost:8000/site/`. Aucun framework, service externe,
+compte ou télémétrie n'est utilisé.
+
+La logique de recherche se vérifie avec les tests natifs de Node :
+
+```bash
+node --test tests/test_catalog_ui.mjs
+```
