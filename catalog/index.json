@@ -1,7 +1,7 @@
 {
   "format": "perfcomparator-community-catalog",
   "format_version": 1,
-  "report_count": 1,
+  "report_count": 2,
   "reports": [
     {
       "benchmark_count": 16,
@@ -22,6 +22,26 @@
         "operating_system": "Darwin",
         "physical_cpu_count": 6,
         "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz"
+      }
+    },
+    {
+      "benchmark_count": 16,
+      "failed_benchmark_count": 0,
+      "path": "reports/protocol-0.3.0/ca134d65ca799de90fd2c69aea9bde4bb077958b9d9994a651e0a7e9b2d75efe.json",
+      "profile": "standard",
+      "protocol_version": "0.3.0",
+      "report_id": "sha256:ca134d65ca799de90fd2c69aea9bde4bb077958b9d9994a651e0a7e9b2d75efe",
+      "suite_version": "0.3.1.dev0",
+      "system": {
+        "architecture": "arm64",
+        "gpu_devices": [
+          "Apple M4"
+        ],
+        "logical_cpu_count": 10,
+        "memory_bytes": 25769803776,
+        "operating_system": "Darwin",
+        "physical_cpu_count": 10,
+        "processor": "Apple M4"
       }
     }
   ]
