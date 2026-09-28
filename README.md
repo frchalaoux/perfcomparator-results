@@ -35,8 +35,18 @@ request. Le
 couvre aussi l'installation, la mesure, la publication, le téléchargement et
 la comparaison locale.
 
-Créer et contrôler le fichier avec une version de PerfComparator qui fournit
-les commandes publiques :
+À partir de PerfComparator `0.4.0.dev2`, le parcours guidé ne demande aucune
+connaissance de Git :
+
+```bash
+perfcomparator contribute
+```
+
+`perfcomparator contribute --dry-run` permet de contrôler localement l'export
+et son aperçu sans se connecter à GitHub.
+
+Le parcours manuel reste disponible en créant et contrôlant le fichier avec une
+version de PerfComparator qui fournit les commandes publiques :
 
 ```bash
 perfcomparator export-public rapport-prive.json \

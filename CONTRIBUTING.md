@@ -13,7 +13,28 @@ commence à l'installation, mesure une machine, publie le rapport et montre
 comment le comparer après téléchargement. Les étapes ci-dessous constituent
 la procédure courte pour la pull request.
 
-## Préparer le fichier
+## Parcours guidé recommandé
+
+Avec PerfComparator `0.4.0.dev2` ou une version ultérieure, aucune commande Git
+n'est nécessaire :
+
+```bash
+perfcomparator contribute
+```
+
+Le menu choisit un rapport récent, construit et affiche l'export public,
+prépare GitHub CLI dans le dossier utilisateur et ouvre le navigateur pour
+connecter ou créer le compte GitHub. Il demande une confirmation distincte
+avant de créer ou réutiliser le fork, créer la branche distante et ouvrir la
+pull request.
+
+Un essai sans connexion ni modification GitHub est disponible :
+
+```bash
+perfcomparator contribute --dry-run
+```
+
+## Préparer manuellement le fichier
 
 PerfComparator `0.4.0.dev1` ou une version ultérieure est nécessaire :
 
@@ -35,7 +56,7 @@ dossier du protocole annoncé :
 reports/protocol-0.3.0/<64-caractères-hexadécimaux>.json
 ```
 
-## Créer la pull request
+## Créer manuellement la pull request
 
 Après avoir forké et cloné ce dépôt :
 
