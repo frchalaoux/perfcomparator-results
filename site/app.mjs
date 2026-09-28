@@ -61,7 +61,7 @@ function reportCard(report) {
 
   const download = document.createElement("a");
   download.className = "download";
-  download.href = `../${report.path}`;
+  download.href = `./${report.path}`;
   download.download = "";
   download.textContent = "Télécharger le JSON";
   download.setAttribute("aria-label", `Télécharger le rapport ${report.system.processor}`);
@@ -120,7 +120,7 @@ elements.filters.addEventListener("input", render);
 elements.filters.addEventListener("reset", () => window.setTimeout(render, 0));
 
 try {
-  const response = await fetch("../catalog/index.json", { cache: "no-store" });
+  const response = await fetch("./catalog/index.json", { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   initialize(await response.json());
 } catch (error) {

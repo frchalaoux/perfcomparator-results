@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 
 from scripts.build_catalog import build_index, check_index, load_entry, serialize_index
+from scripts.build_site import build_site
 
 
 def public_payload(report_id: str) -> dict[str, object]:
@@ -76,3 +77,36 @@ def test_check_rejects_a_stale_index(tmp_path) -> None:
 
     with pytest.raises(ValueError, match="doit être régénéré"):
         check_index(build_index(reports_root=tmp_path / "reports"), destination)
+
+
+def test_build_site_assembles_only_public_assets(tmp_path) -> None:
+    site = tmp_path / "sources" / "site"
+    catalog = tmp_path / "sources" / "catalog"
+    reports = tmp_path / "sources" / "reports"
+    for path in (site, catalog, reports / "protocol-0.3.0"):
+        path.mkdir(parents=True)
+    for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs"):
+        (site / name).write_text(name, encoding="utf-8")
+    (catalog / "index.json").write_text("{}\n", encoding="utf-8")
+    (reports / "protocol-0.3.0" / "public.json").write_text("{}\n", encoding="utf-8")
+    destination = tmp_path / "built"
+
+    build_site(
+        destination,
+        site_source=site,
+        catalog_source=catalog,
+        reports_source=reports,
+    )
+
+    assert (destination / "index.html").read_text(encoding="utf-8") == "index.html"
+    assert (destination / "catalog" / "index.json").exists()
+    assert (destination / "reports" / "protocol-0.3.0" / "public.json").exists()
+    assert (destination / ".nojekyll").exists()
+
+
+def test_build_site_rejects_a_stale_destination(tmp_path) -> None:
+    destination = tmp_path / "built"
+    destination.mkdir()
+
+    with pytest.raises(ValueError, match="existe déjà"):
+        build_site(destination)

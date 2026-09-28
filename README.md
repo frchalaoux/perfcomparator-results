@@ -4,6 +4,11 @@ Catalogue statique de rapports publics produits par PerfComparator. Les
 rapports sont communautaires et **non certifiés** : leur conformité au format
 ne prouve ni la machine déclarée ni les performances mesurées.
 
+## Versions
+
+Le catalogue n'a pas encore de version publiée. Consulter la page permanente
+de [tous les tags](https://github.com/frchalaoux/perfcomparator-results/tags).
+
 ## Organisation
 
 ```text
@@ -51,24 +56,41 @@ contrôle ensuite son emplacement, son nom, son unicité et produit
 `catalog/index.json` dans un ordre déterministe. `check` vérifie que l'index
 suivi correspond exactement aux rapports présents.
 
-Le dépôt local ne contient encore aucun workflow GitHub : celui-ci sera ajouté
-seulement quand une révision publiquement installable de PerfComparator offrira
-le validateur, afin de ne pas référencer une branche ou un commit inexistant.
+Deux workflows sont préparés avec des actions épinglées par SHA :
+
+- `validate-reports.yml` s'exécute sur `pull_request`, sans secret et avec le
+  seul droit `contents: read` ;
+- `deploy-pages.yml` revalide le catalogue sur `main`, assemble `_site`, puis
+  demande uniquement `pages: write` et `id-token: write` dans son job de
+  déploiement.
+
+Tous deux installent le validateur depuis une révision exacte de
+`frchalaoux/perfcomparator`. Ils ne deviendront exécutables qu'après publication
+de cette révision et création explicite du dépôt distant.
 
 ## Prévisualiser le site
 
-Le site est statique et charge directement `catalog/index.json`. Depuis la
-racine du dépôt :
+Le site est assemblé avec l'index et les rapports publics dans un artefact
+autonome ignoré par Git. Depuis la racine du dépôt :
 
 ```bash
-python -m http.server 8000
+python scripts/build_site.py
+python -m http.server 8000 --directory _site
 ```
 
-Ouvrir ensuite `http://localhost:8000/site/`. Aucun framework, service externe,
-compte ou télémétrie n'est utilisé.
+Ouvrir ensuite `http://localhost:8000/`. Aucun framework, service externe,
+compte ou télémétrie n'est utilisé. Supprimer `_site` avant une nouvelle
+construction afin qu'un ancien fichier ne puisse pas rester dans l'artefact.
 
 La logique de recherche se vérifie avec les tests natifs de Node :
 
 ```bash
 node --test tests/test_catalog_ui.mjs
 ```
+
+## Licences
+
+Le code, les scripts, le site et la documentation sont distribués sous
+[licence MIT](LICENSE). Les rapports JSON placés sous `reports/` sont diffusés
+sous [CC0-1.0](LICENSE-DATA.md), conformément au consentement explicite exigé
+par `perfcomparator export-public --accept-cc0`.
