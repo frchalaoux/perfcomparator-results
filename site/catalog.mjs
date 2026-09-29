@@ -10,11 +10,18 @@ export function reportSearchText(report) {
   return normalize([
     system.operating_system,
     system.architecture,
+    system.manufacturer,
+    system.commercial_name,
+    system.model_identifier,
     system.processor,
     ...system.gpu_devices,
     report.profile,
     report.protocol_version,
   ].join(" "));
+}
+
+export function reportTitle(report) {
+  return report.system.commercial_name || report.system.processor;
 }
 
 export function filterReports(reports, filters) {

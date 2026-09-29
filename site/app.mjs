@@ -1,4 +1,10 @@
-import { catalogStats, filterReports, formatMemory, uniqueValues } from "./catalog.mjs";
+import {
+  catalogStats,
+  filterReports,
+  formatMemory,
+  reportTitle,
+  uniqueValues,
+} from "./catalog.mjs";
 
 const elements = {
   filters: document.querySelector("#filters"),
@@ -42,9 +48,14 @@ function reportCard(report) {
   const title = document.createElement("h3");
   const architecture = document.createElement("p");
   const badge = document.createElement("span");
-  title.textContent = report.system.processor;
+  const machineName = reportTitle(report);
+  title.textContent = machineName;
   architecture.className = "architecture";
-  architecture.textContent = `${report.system.operating_system} · ${report.system.architecture}`;
+  architecture.textContent = [
+    report.system.model_identifier,
+    report.system.operating_system,
+    report.system.architecture,
+  ].filter(Boolean).join(" · ");
   badge.className = "badge";
   badge.textContent = report.profile;
   titleGroup.append(title, architecture);
@@ -53,6 +64,7 @@ function reportCard(report) {
   const details = document.createElement("dl");
   details.className = "report-details";
   details.append(
+    detail("Processeur", report.system.processor),
     detail("CPU", `${report.system.physical_cpu_count ?? "?"} cœurs · ${report.system.logical_cpu_count} threads`),
     detail("Mémoire", formatMemory(report.system.memory_bytes)),
     detail("GPU", report.system.gpu_devices.join(", ") || "Non renseigné"),
@@ -64,7 +76,7 @@ function reportCard(report) {
   download.href = `./${report.path}`;
   download.download = "";
   download.textContent = "Télécharger le JSON";
-  download.setAttribute("aria-label", `Télécharger le rapport ${report.system.processor}`);
+  download.setAttribute("aria-label", `Télécharger le rapport ${machineName}`);
 
   card.append(header, details, download);
   return card;

@@ -19,6 +19,9 @@ def public_payload(report_id: str) -> dict[str, object]:
         "system": {
             "operating_system": "Linux",
             "architecture": "x86_64",
+            "manufacturer": "Example Computer",
+            "commercial_name": "Example Computer Workstation 15",
+            "model_identifier": "WS15",
             "processor": "Example CPU",
             "physical_cpu_count": 4,
             "logical_cpu_count": 8,
@@ -50,7 +53,22 @@ def test_build_index_is_sorted_and_minimal(validate, tmp_path) -> None:
         f"sha256:{'b' * 64}",
     ]
     assert "results" not in index["reports"][0]
+    assert index["reports"][0]["system"]["commercial_name"] == ("Example Computer Workstation 15")
     assert validate.call_count == 2
+
+
+@patch("scripts.build_catalog._validate_with_perfcomparator")
+def test_legacy_report_uses_its_processor_as_title(validate, tmp_path) -> None:
+    path = write_report(tmp_path / "reports", "a" * 64)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    for field in ("manufacturer", "commercial_name", "model_identifier"):
+        payload["system"].pop(field)
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    entry = load_entry(path, catalog_root=tmp_path)
+
+    assert entry["system"]["commercial_name"] == "Example CPU"
+    assert entry["system"]["manufacturer"] is None
 
 
 @patch("scripts.build_catalog._validate_with_perfcomparator")

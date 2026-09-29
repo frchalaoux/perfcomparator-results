@@ -27,6 +27,12 @@ Le rangement est fondé sur le protocole, puis sur l'identifiant de contenu. Il
 n'impose pas un fabricant unique à une machine qui peut combiner CPU et GPU de
 marques différentes.
 
+Les rapports publics v2 fournissent un nom commercial confirmé par leur auteur,
+le fabricant détecté et un identifiant de modèle non unique. Ces indications
+restent communautaires et non certifiées. Les numéros de série, UUID matériels
+et noms d'hôte sont exclus. Pour les rapports historiques v1, l'interface
+affiche le processeur à la place du nom commercial absent.
+
 ## Ajouter un rapport
 
 Le [guide de contribution](CONTRIBUTING.md) fournit la procédure de pull
@@ -74,6 +80,7 @@ version de PerfComparator qui fournit les commandes publiques :
 ```bash
 perfcomparator export-public rapport-prive.json \
   --output rapport-public.json \
+  --machine-name "Apple MacBook Pro 15 pouces (2018)" \
   --accept-cc0
 perfcomparator validate-public rapport-public.json
 ```

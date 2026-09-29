@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { catalogStats, filterReports, formatMemory, normalize } from "../site/catalog.mjs";
+import {
+  catalogStats,
+  filterReports,
+  formatMemory,
+  normalize,
+  reportTitle,
+} from "../site/catalog.mjs";
 
 const reports = [
   {
@@ -10,6 +16,9 @@ const reports = [
     system: {
       operating_system: "Darwin",
       architecture: "arm64",
+      manufacturer: "Apple",
+      commercial_name: "Apple MacBook Pro 14 pouces (2024)",
+      model_identifier: "Mac16,1",
       processor: "Apple M4 Pro",
       gpu_devices: ["Apple M4 Pro"],
     },
@@ -39,6 +48,15 @@ test("reports are filtered across hardware text and exact facets", () => {
     filterReports(reports, { query: "m4", operatingSystem: "Windows", profile: "" }),
     [],
   );
+  assert.deepEqual(
+    filterReports(reports, { query: "macbook", operatingSystem: "Darwin", profile: "" }),
+    [reports[0]],
+  );
+});
+
+test("commercial name is preferred with a processor fallback", () => {
+  assert.equal(reportTitle(reports[0]), "Apple MacBook Pro 14 pouces (2024)");
+  assert.equal(reportTitle(reports[1]), "AMD Ryzen 9");
 });
 
 test("catalog statistics count distinct systems and protocols", () => {
