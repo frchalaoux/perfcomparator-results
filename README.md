@@ -1,46 +1,48 @@
 # PerfComparator Community Reports
 
-Catalogue statique de rapports publics produits par PerfComparator. Les
-rapports sont communautaires et **non certifiés** : leur conformité au format
-ne prouve ni la machine déclarée ni les performances mesurées.
+Catalogue statique de rapports publics produits par
+[PerfComparator](https://github.com/frchalaoux/perfcomparator). Il permet de
+rechercher une configuration, de télécharger son rapport JSON puis de la
+comparer localement avec d'autres machines.
+
+Les rapports sont communautaires et **non certifiés** : leur validation prouve
+la conformité du fichier et son intégrité, jamais l'identité de la machine ni
+l'exactitude de ses performances.
+
+- [Ouvrir le catalogue public](https://frchalaoux.github.io/perfcomparator-results/)
+- [Lire le tutoriel complet de publication et de
+  comparaison](https://github.com/frchalaoux/perfcomparator/blob/main/docs/tutoriel-catalogue.md)
+- [Consulter la documentation de ce dépôt](docs/index.md)
+- [Contribuer un rapport](CONTRIBUTING.md)
 
 ## Versions
 
-Le catalogue n'a pas encore de version publiée. Consulter la page permanente
-de [tous les tags](https://github.com/frchalaoux/perfcomparator-results/tags).
+Le catalogue n'a pas encore de version publiée. La page permanente de
+[tous les tags](https://github.com/frchalaoux/perfcomparator-results/tags) sera
+la source de référence dès la première version.
 
-## Organisation
+Le validateur utilisé par l'automatisation est épinglé sur une révision exacte
+de PerfComparator. Cette révision est indiquée dans les workflows de validation
+et de déploiement.
 
-```text
-reports/
-└── protocol-0.3.0/
-    └── <identifiant-sha256>.json
-scripts/
-├── build_catalog.py
-└── build_site.py
-site/
-└── index.html
+## Utilisation rapide
+
+Le catalogue se consulte sans compte GitHub. Depuis une fiche de machine :
+
+1. cliquer sur **Télécharger le JSON** ;
+2. vérifier le fichier avec `perfcomparator validate-public` ;
+3. le comparer à un rapport local compatible.
+
+```bash
+perfcomparator validate-public rapport-telecharge.json
+perfcomparator compare mon-rapport.json rapport-telecharge.json \
+  --html comparaison.html
 ```
 
-Le rangement est fondé sur le protocole, puis sur l'identifiant de contenu. Il
-n'impose pas un fabricant unique à une machine qui peut combiner CPU et GPU de
-marques différentes. L'index JSON consommé par le site est généré depuis ces
-rapports pendant le déploiement et n'est pas versionné.
+Les rapports doivent employer le même protocole, le même profil et la même
+version de Python. Le premier rapport est la référence 100.
 
-Les rapports publics v2 fournissent un nom commercial confirmé par leur auteur,
-le fabricant détecté et un identifiant de modèle non unique. La v3 ajoute une
-référence commerciale ou SKU facultative. Ces indications restent
-communautaires et non certifiées. Les numéros de série, UUID matériels et noms
-d'hôte sont exclus. Pour les rapports historiques v1, l'interface affiche le
-processeur à la place du nom commercial absent.
-
-## Ajouter un rapport
-
-Le [guide de contribution](CONTRIBUTING.md) fournit la procédure de pull
-request. Le
-[tutoriel de A à Z](https://github.com/frchalaoux/perfcomparator/blob/main/docs/tutoriel-catalogue.md)
-couvre aussi l'installation, la mesure, la publication, le téléchargement et
-la comparaison locale.
+## Contribution rapide
 
 À partir de PerfComparator `0.4.0.dev2`, le parcours guidé ne demande aucune
 connaissance de Git :
@@ -49,109 +51,61 @@ connaissance de Git :
 perfcomparator contribute
 ```
 
-`perfcomparator contribute --dry-run` permet de contrôler localement l'export
-et son aperçu sans se connecter à GitHub.
+La commande choisit un rapport local, prépare son export public, recueille le
+consentement CC0, accompagne la connexion à GitHub puis propose une pull
+request. `perfcomparator contribute --dry-run` permet d'essayer tout le parcours
+sans connexion ni modification distante.
 
-La commande affiche **Contribution envoyée** dès que la pull request existe.
-Le rapport n'est pas encore visible à cet instant. Le dépôt enchaîne ensuite
-automatiquement la validation, la fusion des contributions qui ne contiennent
-qu'un nouveau rapport, la génération de l'index, puis le déploiement GitHub
-Pages. Une contribution refusée reste ouverte avec son contrôle en erreur.
-Pour la première contribution d'un compte externe, la politique de sécurité de
-GitHub peut demander au mainteneur d'autoriser le démarrage du contrôle. Après
-ce contrôle initial, la fusion et le déploiement restent automatiques.
+Une contribution normale contient **exactement un nouveau rapport JSON**.
+Après validation, elle est fusionnée automatiquement puis GitHub Pages est
+redéployé. L'index du site est calculé depuis les rapports présents dans
+`main` : il n'est ni stocké dans une base de données ni versionné dans Git.
 
-## Télécharger et comparer
+Le [guide de contribution](CONTRIBUTING.md) détaille le parcours guidé, la
+méthode manuelle et les critères d'acceptation.
 
-Ouvrir le [catalogue web](https://frchalaoux.github.io/perfcomparator-results/),
-filtrer si nécessaire, puis cliquer sur **Télécharger le JSON** dans la fiche
-choisie. Comparer ensuite ce fichier avec un rapport local compatible :
+## Documentation
 
-```bash
-perfcomparator compare mon-rapport-local.json rapport-telecharge.json \
-  --html comparaison.html
-```
+| Besoin | Document |
+| --- | --- |
+| Télécharger, vérifier et comparer un rapport | [Guide utilisateur](docs/guide-utilisateur.md) |
+| Comprendre les données publiées et l'effacement | [Données et confidentialité](docs/donnees-et-confidentialite.md) |
+| Comprendre le dépôt, l'index généré et les workflows | [Architecture](docs/architecture.md) |
+| Valider, prévisualiser, déployer ou retirer un rapport | [Guide de maintenance](docs/maintenance.md) |
+| Diagnostiquer une contribution ou un déploiement | [Dépannage](docs/depannage.md) |
+| Ajouter un rapport | [Guide de contribution](CONTRIBUTING.md) |
 
-Le premier fichier sert de référence 100. Les rapports doivent employer le
-même protocole, le même profil et la même version de Python.
+## Principes techniques
 
-Le parcours manuel reste disponible en créant et contrôlant le fichier avec une
-version de PerfComparator qui fournit les commandes publiques :
+- Les fichiers sous `reports/` sont l'unique source de vérité du catalogue.
+- Chaque rapport est un export public validé par `perfcomparator
+  validate-public`.
+- Son chemin dépend du protocole et son nom est son identifiant SHA-256.
+- `scripts/build_site.py` génère un artefact statique autonome dans `_site/`.
+- Le site n'utilise ni serveur applicatif, ni base de données, ni compte, ni
+  télémétrie.
+- L'ajout d'un seul rapport peut être fusionné automatiquement ; toute
+  suppression ou modification demande une revue humaine.
 
-```bash
-perfcomparator export-public rapport-prive.json \
-  --output rapport-public.json \
-  --machine-name "Apple MacBook Pro 15 pouces (2018)" \
-  --machine-sku "MR942FN/A" \
-  --accept-cc0
-perfcomparator validate-public rapport-public.json
-```
-
-Renommer ensuite le fichier avec les 64 caractères hexadécimaux de son
-`report_id`, sans le préfixe `sha256:`, et le placer sous le protocole annoncé.
-Les données du rapport sont diffusées sous `CC0-1.0`.
-
-## Valider et prévisualiser le catalogue
+## Développement local
 
 ```bash
-python scripts/build_catalog.py validate
-python scripts/build_site.py
-```
-
-Chaque rapport est d'abord confié à `perfcomparator validate-public`. Le script
-contrôle ensuite son emplacement, son nom et son unicité. `build_site.py`
-produit l'index dans `_site/catalog/index.json`, dans un ordre déterministe,
-sans modifier les fichiers suivis par Git.
-
-Trois workflows sont préparés avec des actions épinglées par SHA :
-
-- `validate-reports.yml` s'exécute sur `pull_request`, sans secret et avec le
-  seul droit `contents: read` ;
-- `auto-merge-reports.yml` s'exécute depuis `main` après une validation réussie,
-  exige exactement un nouveau rapport, vérifie que le commit validé est
-  toujours en tête, puis fusionne la pull request ;
-- `deploy-pages.yml` revalide le catalogue sur `main`, assemble `_site`, puis
-  demande uniquement `pages: write` et `id-token: write` dans son job de
-  déploiement.
-
-La fusion réalisée avec le jeton éphémère de GitHub Actions ne déclenchant pas
-un second workflow par événement `push`, l'automatisation demande explicitement
-le lancement de `deploy-pages.yml` par `workflow_dispatch`.
-
-Les workflows de validation et de déploiement installent le validateur depuis
-une révision exacte de `frchalaoux/perfcomparator`.
-
-## Retirer un rapport
-
-Supprimer uniquement son fichier sous `reports/`, puis ouvrir une pull request.
-La suppression est contrôlée et fusionnée manuellement afin qu'un contributeur
-ne puisse pas retirer le rapport d'un autre. Après fusion, le déploiement
-reconstruit automatiquement l'index et le rapport disparaît du site ; aucun
-fichier d'index n'est à corriger.
-
-## Prévisualiser le site
-
-Le site est assemblé avec l'index et les rapports publics dans un artefact
-autonome ignoré par Git. Depuis la racine du dépôt :
-
-```bash
-python scripts/build_site.py
-python -m http.server 8000 --directory _site
-```
-
-Ouvrir ensuite `http://localhost:8000/`. Aucun framework, service externe,
-compte ou télémétrie n'est utilisé. Supprimer `_site` avant une nouvelle
-construction afin qu'un ancien fichier ne puisse pas rester dans l'artefact.
-
-La logique de recherche se vérifie avec les tests natifs de Node :
-
-```bash
+uv sync --locked --dev
+uv run ruff format --check
+uv run ruff check
+uv run pytest -q
 node --test tests/test_catalog_ui.mjs
+uv run python scripts/build_catalog.py validate
+uv run python scripts/build_site.py --output _site-preview
 ```
+
+La construction exige que le dossier de sortie n'existe pas déjà. Le
+[guide de maintenance](docs/maintenance.md) décrit l'installation du validateur,
+la prévisualisation HTTP et la procédure complète de publication.
 
 ## Licences
 
 Le code, les scripts, le site et la documentation sont distribués sous
-[licence MIT](LICENSE). Les rapports JSON placés sous `reports/` sont diffusés
-sous [CC0-1.0](LICENSE-DATA.md), conformément au consentement explicite exigé
-par `perfcomparator export-public --accept-cc0`.
+[licence MIT](LICENSE). Les rapports placés sous `reports/` sont diffusés sous
+[CC0-1.0](LICENSE-DATA.md), conformément au consentement explicite exigé par
+PerfComparator.
