@@ -11,12 +11,14 @@ intégrité, pas l'identité de la machine ni l'exactitude des scores.
 Le [tutoriel complet](https://github.com/frchalaoux/perfcomparator/blob/main/docs/tutoriel-catalogue.md)
 commence à l'installation, mesure une machine, publie le rapport et montre
 comment le comparer après téléchargement. Les étapes ci-dessous constituent
-la procédure courte pour la pull request.
+la procédure courte pour la pull request. La
+[documentation du catalogue](docs/index.md) sépare aussi les parcours
+utilisateur, architecture, maintenance et dépannage.
 
 ## Parcours guidé recommandé
 
 Avec PerfComparator `0.4.0.dev2` ou une version ultérieure, aucune commande Git
-n'est nécessaire :
+n'est nécessaire. La version publiée recommandée est `0.4.0.dev6` :
 
 ```bash
 perfcomparator contribute
@@ -49,7 +51,7 @@ perfcomparator contribute --dry-run
 
 ## Préparer manuellement le fichier
 
-PerfComparator `0.4.0.dev1` ou une version ultérieure est nécessaire :
+Utiliser de préférence PerfComparator `0.4.0.dev6` :
 
 ```bash
 perfcomparator export-public rapport-prive.json \
@@ -92,7 +94,7 @@ du commit :
 
 ```bash
 git status --short
-git add reports/protocol-0.3.0/*.json
+git add reports/protocol-0.3.0/IDENTIFIANT_EXACT.json
 git commit -m "Add community benchmark report"
 git push -u origin add/community-report
 ```
@@ -103,6 +105,9 @@ en lecture seule au contenu. Un second workflow privilégié ne charge aucun cod
 de la contribution : il consulte la pull request par API, vérifie qu'elle ne
 contient que l'unique rapport autorisé et que son commit n'a pas changé, puis
 la fusionne et demande le déploiement Pages.
+
+Ne réunissez pas un rapport avec une correction de code ou de documentation.
+L'auto-fusion est volontairement réservée à l'ajout isolé d'un seul JSON.
 
 ## Critères de refus courants
 
@@ -117,7 +122,16 @@ la fusionne et demande le déploiement Pages.
 Supprimez uniquement le fichier JSON concerné et ouvrez une pull request. Les
 retraits ne sont jamais fusionnés automatiquement : un mainteneur vérifie la
 demande avant la fusion. Le prochain déploiement régénère l'index sans le
-rapport supprimé ; aucun autre fichier n'est à modifier.
+rapport supprimé ; aucun autre fichier n'est à modifier. Lire auparavant les
+[limites de l'effacement](docs/donnees-et-confidentialite.md#retrait-et-limites-de-leffacement).
+
+## Contribuer au code ou à la documentation
+
+Créer une pull request distincte des rapports et décrire le comportement
+modifié. Le contrôle local complet figure dans le
+[guide de maintenance](docs/maintenance.md#exécuter-les-contrôles). Une telle
+PR est toujours revue et fusionnée manuellement ; elle ne correspond pas au
+cas très restreint de l'auto-fusion des données.
 
 Une fois le déploiement terminé, ouvrir le
 [catalogue statique](https://frchalaoux.github.io/perfcomparator-results/),
