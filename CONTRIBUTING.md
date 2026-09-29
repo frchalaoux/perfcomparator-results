@@ -22,11 +22,11 @@ n'est nécessaire :
 perfcomparator contribute
 ```
 
-Le menu choisit un rapport récent, construit et affiche l'export public,
-prépare GitHub CLI dans le dossier utilisateur et ouvre le navigateur pour
-connecter ou créer le compte GitHub. Il demande une confirmation distincte
-avant de créer ou réutiliser le fork, créer la branche distante et ouvrir la
-pull request.
+Le menu choisit un rapport récent, propose un nom commercial public à confirmer
+ou corriger, puis construit et affiche l'export. Il prépare GitHub CLI dans le
+dossier utilisateur et ouvre le navigateur pour connecter ou créer le compte
+GitHub. Il demande une confirmation distincte avant de créer ou réutiliser le
+fork, créer la branche distante et ouvrir la pull request.
 
 Le message **Contribution envoyée** signifie que la pull request a été créée.
 Le dépôt vérifie ensuite automatiquement le rapport. Si le contrôle réussit et
@@ -53,12 +53,15 @@ PerfComparator `0.4.0.dev1` ou une version ultérieure est nécessaire :
 ```bash
 perfcomparator export-public rapport-prive.json \
   --output rapport-public.json \
+  --machine-name "Apple MacBook Pro 15 pouces (2018)" \
   --accept-cc0
 perfcomparator validate-public rapport-public.json
 ```
 
-Relisez le fichier. Même si les champs privés sont retirés, une configuration
-matérielle rare peut être reconnaissable.
+Adaptez le nom commercial à la machine réellement vendue, puis relisez le
+fichier. Ce nom est déclaré par le participant et n'est pas certifié. Même si
+le numéro de série, les UUID matériels, le nom d'hôte et les autres champs
+privés sont retirés, une configuration matérielle rare peut être reconnaissable.
 
 La dernière commande affiche un `report_id` préfixé par `sha256:`. Renommez le
 fichier avec les 64 caractères qui suivent ce préfixe et placez-le dans le

@@ -59,6 +59,7 @@ def load_entry(
         )
 
     system = payload["system"]
+    commercial_name = system.get("commercial_name") or system["processor"]
     return {
         "report_id": report_id,
         "path": path.relative_to(catalog_root).as_posix(),
@@ -70,6 +71,9 @@ def load_entry(
         "system": {
             "operating_system": system["operating_system"],
             "architecture": system["architecture"],
+            "manufacturer": system.get("manufacturer"),
+            "commercial_name": commercial_name,
+            "model_identifier": system.get("model_identifier"),
             "processor": system["processor"],
             "physical_cpu_count": system["physical_cpu_count"],
             "logical_cpu_count": system["logical_cpu_count"],

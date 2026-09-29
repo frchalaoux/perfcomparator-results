@@ -13,12 +13,15 @@
       "suite_version": "0.3.0.dev2",
       "system": {
         "architecture": "x86_64",
+        "commercial_name": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz",
         "gpu_devices": [
           "Intel UHD Graphics 630",
           "Radeon Pro 560X"
         ],
         "logical_cpu_count": 12,
+        "manufacturer": null,
         "memory_bytes": 34359738368,
+        "model_identifier": null,
         "operating_system": "Darwin",
         "physical_cpu_count": 6,
         "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz"
@@ -34,11 +37,14 @@
       "suite_version": "0.3.1.dev0",
       "system": {
         "architecture": "arm64",
+        "commercial_name": "Apple M4",
         "gpu_devices": [
           "Apple M4"
         ],
         "logical_cpu_count": 10,
+        "manufacturer": null,
         "memory_bytes": 25769803776,
+        "model_identifier": null,
         "operating_system": "Darwin",
         "physical_cpu_count": 10,
         "processor": "Apple M4"
