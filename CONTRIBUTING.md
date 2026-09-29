@@ -128,10 +128,12 @@ rapport supprimé ; aucun autre fichier n'est à modifier. Lire auparavant les
 ## Contribuer au code ou à la documentation
 
 Créer une pull request distincte des rapports et décrire le comportement
-modifié. Le contrôle local complet figure dans le
+modifié. Le [guide développeur](docs/guide-developpeur.md) présente le code, les
+tests et les parcours de modification ; le contrôle d'exploitation complet
+figure aussi dans le
 [guide de maintenance](docs/maintenance.md#exécuter-les-contrôles). Une telle
-PR est toujours revue et fusionnée manuellement ; elle ne correspond pas au
-cas très restreint de l'auto-fusion des données.
+PR est toujours revue et fusionnée manuellement ; elle ne correspond pas au cas
+très restreint de l'auto-fusion des données.
 
 Une fois le déploiement terminé, ouvrir le
 [catalogue statique](https://frchalaoux.github.io/perfcomparator-results/),

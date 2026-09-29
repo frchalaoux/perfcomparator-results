@@ -26,6 +26,8 @@ voulez accomplir.
 
 - [Architecture](architecture.md) : sources de vérité, génération de l'index,
   déploiement statique et modèle de sécurité des workflows.
+- [Guide développeur](guide-developpeur.md) : environnement, carte du code,
+  parcours de modification, tests et conventions de pull request.
 - [Guide de maintenance](maintenance.md) : environnement local, contrôles,
   prévisualisation, ajout, retrait, mise à jour du validateur et déploiement.
 - [Dépannage](depannage.md) : erreurs fréquentes dans les pull requests, la
