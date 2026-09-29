@@ -71,6 +71,7 @@ méthode manuelle et les critères d'acceptation.
 | Télécharger, vérifier et comparer un rapport | [Guide utilisateur](docs/guide-utilisateur.md) |
 | Comprendre les données publiées et l'effacement | [Données et confidentialité](docs/donnees-et-confidentialite.md) |
 | Comprendre le dépôt, l'index généré et les workflows | [Architecture](docs/architecture.md) |
+| Développer le catalogue et ses tests | [Guide développeur](docs/guide-developpeur.md) |
 | Valider, prévisualiser, déployer ou retirer un rapport | [Guide de maintenance](docs/maintenance.md) |
 | Diagnostiquer une contribution ou un déploiement | [Dépannage](docs/depannage.md) |
 | Ajouter un rapport | [Guide de contribution](CONTRIBUTING.md) |
