@@ -1,7 +1,7 @@
 {
   "format": "perfcomparator-community-catalog",
   "format_version": 1,
-  "report_count": 2,
+  "report_count": 3,
   "reports": [
     {
       "benchmark_count": 16,
@@ -48,6 +48,27 @@
         "operating_system": "Darwin",
         "physical_cpu_count": 10,
         "processor": "Apple M4"
+      }
+    },
+    {
+      "benchmark_count": 16,
+      "failed_benchmark_count": 0,
+      "path": "reports/protocol-0.3.0/e72aca320a1e179f6e64d3bf44b5f4913939a3d079b1013a2d7c2e5b41e21a82.json",
+      "profile": "standard",
+      "protocol_version": "0.3.0",
+      "report_id": "sha256:e72aca320a1e179f6e64d3bf44b5f4913939a3d079b1013a2d7c2e5b41e21a82",
+      "suite_version": "0.4.0.dev5",
+      "system": {
+        "architecture": "x86_64",
+        "gpu_devices": [
+          "Intel UHD Graphics 630",
+          "Radeon Pro 560X"
+        ],
+        "logical_cpu_count": 12,
+        "memory_bytes": 34359738368,
+        "operating_system": "Darwin",
+        "physical_cpu_count": 6,
+        "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz"
       }
     }
   ]
