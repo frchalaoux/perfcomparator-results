@@ -24,7 +24,8 @@
         "model_identifier": null,
         "operating_system": "Darwin",
         "physical_cpu_count": 6,
-        "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz"
+        "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz",
+        "product_sku": null
       }
     },
     {
@@ -47,7 +48,8 @@
         "model_identifier": null,
         "operating_system": "Darwin",
         "physical_cpu_count": 10,
-        "processor": "Apple M4"
+        "processor": "Apple M4",
+        "product_sku": null
       }
     }
   ]

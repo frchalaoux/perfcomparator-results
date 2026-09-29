@@ -22,6 +22,7 @@ def public_payload(report_id: str) -> dict[str, object]:
             "manufacturer": "Example Computer",
             "commercial_name": "Example Computer Workstation 15",
             "model_identifier": "WS15",
+            "product_sku": "WS15-FR-32",
             "processor": "Example CPU",
             "physical_cpu_count": 4,
             "logical_cpu_count": 8,
@@ -54,6 +55,7 @@ def test_build_index_is_sorted_and_minimal(validate, tmp_path) -> None:
     ]
     assert "results" not in index["reports"][0]
     assert index["reports"][0]["system"]["commercial_name"] == ("Example Computer Workstation 15")
+    assert index["reports"][0]["system"]["product_sku"] == "WS15-FR-32"
     assert validate.call_count == 2
 
 
@@ -61,7 +63,7 @@ def test_build_index_is_sorted_and_minimal(validate, tmp_path) -> None:
 def test_legacy_report_uses_its_processor_as_title(validate, tmp_path) -> None:
     path = write_report(tmp_path / "reports", "a" * 64)
     payload = json.loads(path.read_text(encoding="utf-8"))
-    for field in ("manufacturer", "commercial_name", "model_identifier"):
+    for field in ("manufacturer", "commercial_name", "model_identifier", "product_sku"):
         payload["system"].pop(field)
     path.write_text(json.dumps(payload), encoding="utf-8")
 
@@ -69,6 +71,7 @@ def test_legacy_report_uses_its_processor_as_title(validate, tmp_path) -> None:
 
     assert entry["system"]["commercial_name"] == "Example CPU"
     assert entry["system"]["manufacturer"] is None
+    assert entry["system"]["product_sku"] is None
 
 
 @patch("scripts.build_catalog._validate_with_perfcomparator")

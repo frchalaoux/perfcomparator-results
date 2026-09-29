@@ -13,6 +13,7 @@ export function reportSearchText(report) {
     system.manufacturer,
     system.commercial_name,
     system.model_identifier,
+    system.product_sku,
     system.processor,
     ...system.gpu_devices,
     report.profile,
