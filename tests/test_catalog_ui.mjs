@@ -19,6 +19,7 @@ const reports = [
       manufacturer: "Apple",
       commercial_name: "Apple MacBook Pro 14 pouces (2024)",
       model_identifier: "Mac16,1",
+      product_sku: "MX2H3FN/A",
       processor: "Apple M4 Pro",
       gpu_devices: ["Apple M4 Pro"],
     },
@@ -50,6 +51,10 @@ test("reports are filtered across hardware text and exact facets", () => {
   );
   assert.deepEqual(
     filterReports(reports, { query: "macbook", operatingSystem: "Darwin", profile: "" }),
+    [reports[0]],
+  );
+  assert.deepEqual(
+    filterReports(reports, { query: "MX2H3FN/A", operatingSystem: "", profile: "" }),
     [reports[0]],
   );
 });

@@ -74,6 +74,7 @@ def load_entry(
             "manufacturer": system.get("manufacturer"),
             "commercial_name": commercial_name,
             "model_identifier": system.get("model_identifier"),
+            "product_sku": system.get("product_sku"),
             "processor": system["processor"],
             "physical_cpu_count": system["physical_cpu_count"],
             "logical_cpu_count": system["logical_cpu_count"],

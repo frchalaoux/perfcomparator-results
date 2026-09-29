@@ -63,6 +63,9 @@ function reportCard(report) {
 
   const details = document.createElement("dl");
   details.className = "report-details";
+  if (report.system.product_sku) {
+    details.append(detail("Référence commerciale", report.system.product_sku));
+  }
   details.append(
     detail("Processeur", report.system.processor),
     detail("CPU", `${report.system.physical_cpu_count ?? "?"} cœurs · ${report.system.logical_cpu_count} threads`),

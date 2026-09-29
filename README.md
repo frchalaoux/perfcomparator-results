@@ -28,10 +28,11 @@ n'impose pas un fabricant unique à une machine qui peut combiner CPU et GPU de
 marques différentes.
 
 Les rapports publics v2 fournissent un nom commercial confirmé par leur auteur,
-le fabricant détecté et un identifiant de modèle non unique. Ces indications
-restent communautaires et non certifiées. Les numéros de série, UUID matériels
-et noms d'hôte sont exclus. Pour les rapports historiques v1, l'interface
-affiche le processeur à la place du nom commercial absent.
+le fabricant détecté et un identifiant de modèle non unique. La v3 ajoute une
+référence commerciale ou SKU facultative. Ces indications restent
+communautaires et non certifiées. Les numéros de série, UUID matériels et noms
+d'hôte sont exclus. Pour les rapports historiques v1, l'interface affiche le
+processeur à la place du nom commercial absent.
 
 ## Ajouter un rapport
 
@@ -81,6 +82,7 @@ version de PerfComparator qui fournit les commandes publiques :
 perfcomparator export-public rapport-prive.json \
   --output rapport-public.json \
   --machine-name "Apple MacBook Pro 15 pouces (2018)" \
+  --machine-sku "MR942FN/A" \
   --accept-cc0
 perfcomparator validate-public rapport-public.json
 ```
