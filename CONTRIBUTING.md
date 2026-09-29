@@ -31,9 +31,9 @@ fork, créer la branche distante et ouvrir la pull request.
 
 Le message **Contribution envoyée** signifie que la pull request a été créée.
 Le dépôt vérifie ensuite automatiquement le rapport. Si le contrôle réussit et
-si la pull request contient uniquement un nouveau rapport et
-`catalog/index.json`, elle est fusionnée automatiquement, puis GitHub Pages est
-redéployé. Le rapport apparaît alors dans le
+si la pull request contient uniquement un nouveau rapport, elle est fusionnée
+automatiquement. GitHub Pages génère ensuite l'index depuis les rapports et
+redéploie le site. Le rapport apparaît alors dans le
 [catalogue web](https://frchalaoux.github.io/perfcomparator-results/). Une
 validation en échec laisse la pull request ouverte afin que son erreur puisse
 être corrigée.
@@ -83,18 +83,16 @@ Après avoir forké et cloné ce dépôt :
 git switch -c add/community-report
 uv sync --locked --dev
 uv run python scripts/build_catalog.py validate
-uv run python scripts/build_catalog.py build
-uv run python scripts/build_catalog.py check
 uv run pytest -q
 node --test tests/test_catalog_ui.mjs
 ```
 
-`build` régénère `catalog/index.json`. Le rapport et cet index doivent faire
-partie du même commit :
+L'index est généré seulement pendant le déploiement et ne doit pas faire partie
+du commit :
 
 ```bash
 git status --short
-git add reports/protocol-0.3.0/*.json catalog/index.json
+git add reports/protocol-0.3.0/*.json
 git commit -m "Add community benchmark report"
 git push -u origin add/community-report
 ```
@@ -103,7 +101,7 @@ Ouvrez ensuite une pull request vers `frchalaoux/perfcomparator-results:main`.
 Son premier workflow exécute les mêmes contrôles sans secret et avec un accès
 en lecture seule au contenu. Un second workflow privilégié ne charge aucun code
 de la contribution : il consulte la pull request par API, vérifie qu'elle ne
-contient que les deux fichiers autorisés et que son commit n'a pas changé, puis
+contient que l'unique rapport autorisé et que son commit n'a pas changé, puis
 la fusionne et demande le déploiement Pages.
 
 ## Critères de refus courants
@@ -112,8 +110,14 @@ la fusionne et demande le déploiement Pages.
 - contenu modifié après l'export, donc `report_id` invalide ;
 - nom différent des 64 caractères de l'identifiant ;
 - dossier différent de `protocol-<protocol_version>` ;
-- index non régénéré ;
 - fichier de plus de 2 Mio.
+
+## Demander le retrait d'un rapport
+
+Supprimez uniquement le fichier JSON concerné et ouvrez une pull request. Les
+retraits ne sont jamais fusionnés automatiquement : un mainteneur vérifie la
+demande avant la fusion. Le prochain déploiement régénère l'index sans le
+rapport supprimé ; aucun autre fichier n'est à modifier.
 
 Une fois le déploiement terminé, ouvrir le
 [catalogue statique](https://frchalaoux.github.io/perfcomparator-results/),

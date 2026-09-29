@@ -1,4 +1,4 @@
-"""Valide les rapports suivis et construit un index statique déterministe."""
+"""Valide les rapports suivis et construit leur index déterministe en mémoire."""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS_ROOT = ROOT / "reports"
-INDEX_PATH = ROOT / "catalog" / "index.json"
 MAX_REPORT_BYTES = 2 * 1_048_576
 SUPPORTED_PROTOCOLS = frozenset({"0.3.0"})
 
@@ -110,26 +109,9 @@ def serialize_index(index: dict[str, object]) -> str:
     return json.dumps(index, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
 
 
-def write_index(index: dict[str, object], destination: Path = INDEX_PATH) -> None:
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    temporary = destination.with_suffix(".tmp")
-    temporary.write_text(serialize_index(index), encoding="utf-8")
-    temporary.replace(destination)
-
-
-def check_index(index: dict[str, object], destination: Path = INDEX_PATH) -> None:
-    expected = serialize_index(index)
-    try:
-        current = destination.read_text(encoding="utf-8")
-    except OSError as error:
-        raise ValueError(f"Index introuvable : {destination.relative_to(ROOT)}") from error
-    if current != expected:
-        raise ValueError("catalog/index.json doit être régénéré avec la commande build.")
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("validate", "build", "check"))
+    parser.add_argument("command", choices=("validate",))
     parser.add_argument(
         "--validator",
         default="perfcomparator",
@@ -138,10 +120,6 @@ def main() -> None:
     arguments = parser.parse_args()
     try:
         index = build_index(validator=arguments.validator)
-        if arguments.command == "build":
-            write_index(index)
-        elif arguments.command == "check":
-            check_index(index)
     except (OSError, ValueError, json.JSONDecodeError, KeyError, TypeError) as error:
         parser.error(str(error))
     print(f"{index['report_count']} rapport(s) valide(s).")

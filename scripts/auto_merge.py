@@ -64,15 +64,13 @@ def validated_pull_request_number(event: dict[str, object]) -> int | None:
 
 
 def validate_changed_files(files: list[dict[str, object]]) -> None:
-    """N'autorise qu'un nouveau rapport et l'index généré."""
-    if len(files) != 2:
-        raise ValueError("La contribution doit modifier exactement deux fichiers.")
+    """N'autorise qu'un unique nouveau rapport public."""
+    if len(files) != 1:
+        raise ValueError("La contribution doit ajouter exactement un fichier.")
     statuses = {str(item.get("filename")): item.get("status") for item in files}
     reports = [path for path in statuses if REPORT_PATH.fullmatch(path)]
     if len(reports) != 1 or statuses[reports[0]] != "added":
         raise ValueError("La contribution doit ajouter exactement un rapport public.")
-    if statuses.get("catalog/index.json") != "modified":
-        raise ValueError("La contribution doit uniquement régénérer catalog/index.json.")
 
 
 def merge_validated_report(event: dict[str, object], client: GitHubClient) -> str:
@@ -94,8 +92,8 @@ def merge_validated_report(event: dict[str, object], client: GitHubClient) -> st
     head_sha = pull_request.get("head", {}).get("sha")
     if not isinstance(validated_sha, str) or head_sha != validated_sha:
         raise ValueError("La tête de la pull request a changé depuis sa validation.")
-    if pull_request.get("changed_files") != 2:
-        raise ValueError("La pull request ne contient pas exactement deux fichiers.")
+    if pull_request.get("changed_files") != 1:
+        raise ValueError("La pull request ne contient pas exactement un fichier.")
 
     files = client.request("GET", f"/pulls/{number}/files?per_page=100")
     if not isinstance(files, list):
