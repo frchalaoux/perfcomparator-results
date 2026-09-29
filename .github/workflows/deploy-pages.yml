@@ -31,7 +31,7 @@ jobs:
 
       - name: Install the pinned PerfComparator validator
         run: |
-          uv tool install "git+https://github.com/frchalaoux/perfcomparator@1185614203fe37460420531456cf4365cdafc2c4"
+          uv tool install "git+https://github.com/frchalaoux/perfcomparator@c0a1ea6bc028262eaad1c182806fb0816bd8fa13"
           echo "$(uv tool dir --bin)" >> "$GITHUB_PATH"
 
       - name: Validate the catalog
@@ -41,7 +41,6 @@ jobs:
           uv run pytest -q
           node --test tests/test_catalog_ui.mjs
           uv run python scripts/build_catalog.py validate
-          uv run python scripts/build_catalog.py check
 
       - name: Build the static site
         run: uv run python scripts/build_site.py

@@ -26,7 +26,7 @@ def successful_event():
     }
 
 
-def test_merge_accepts_only_a_new_report_and_generated_index() -> None:
+def test_merge_accepts_only_one_new_report() -> None:
     client = FakeGitHubClient(
         [
             {
@@ -34,12 +34,9 @@ def test_merge_accepts_only_a_new_report_and_generated_index() -> None:
                 "draft": False,
                 "base": {"ref": "main"},
                 "head": {"sha": "abc123"},
-                "changed_files": 2,
+                "changed_files": 1,
             },
-            [
-                {"filename": REPORT_PATH, "status": "added"},
-                {"filename": "catalog/index.json", "status": "modified"},
-            ],
+            [{"filename": REPORT_PATH, "status": "added"}],
             {"merged": True},
             None,
         ]
@@ -63,10 +60,11 @@ def test_merge_accepts_only_a_new_report_and_generated_index() -> None:
 @pytest.mark.parametrize(
     "files",
     [
-        [{"filename": REPORT_PATH, "status": "added"}],
+        [],
+        [{"filename": REPORT_PATH, "status": "removed"}],
         [
-            {"filename": REPORT_PATH, "status": "modified"},
-            {"filename": "catalog/index.json", "status": "modified"},
+            {"filename": REPORT_PATH, "status": "added"},
+            {"filename": "README.md", "status": "modified"},
         ],
         [
             {"filename": REPORT_PATH, "status": "added"},
@@ -87,7 +85,7 @@ def test_merge_rejects_a_head_changed_after_validation() -> None:
                 "draft": False,
                 "base": {"ref": "main"},
                 "head": {"sha": "new-head"},
-                "changed_files": 2,
+                "changed_files": 1,
             }
         ]
     )

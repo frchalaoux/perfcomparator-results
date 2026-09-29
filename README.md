@@ -15,17 +15,17 @@ de [tous les tags](https://github.com/frchalaoux/perfcomparator-results/tags).
 reports/
 └── protocol-0.3.0/
     └── <identifiant-sha256>.json
-catalog/
-└── index.json
 scripts/
-└── build_catalog.py
+├── build_catalog.py
+└── build_site.py
 site/
 └── index.html
 ```
 
 Le rangement est fondé sur le protocole, puis sur l'identifiant de contenu. Il
 n'impose pas un fabricant unique à une machine qui peut combiner CPU et GPU de
-marques différentes.
+marques différentes. L'index JSON consommé par le site est généré depuis ces
+rapports pendant le déploiement et n'est pas versionné.
 
 Les rapports publics v2 fournissent un nom commercial confirmé par leur auteur,
 le fabricant détecté et un identifiant de modèle non unique. La v3 ajoute une
@@ -55,8 +55,8 @@ et son aperçu sans se connecter à GitHub.
 La commande affiche **Contribution envoyée** dès que la pull request existe.
 Le rapport n'est pas encore visible à cet instant. Le dépôt enchaîne ensuite
 automatiquement la validation, la fusion des contributions qui ne contiennent
-que le rapport et l'index généré, puis le déploiement GitHub Pages. Une
-contribution refusée reste ouverte avec son contrôle en erreur.
+qu'un nouveau rapport, la génération de l'index, puis le déploiement GitHub
+Pages. Une contribution refusée reste ouverte avec son contrôle en erreur.
 Pour la première contribution d'un compte externe, la politique de sécurité de
 GitHub peut demander au mainteneur d'autoriser le démarrage du contrôle. Après
 ce contrôle initial, la fusion et le déploiement restent automatiques.
@@ -91,26 +91,25 @@ Renommer ensuite le fichier avec les 64 caractères hexadécimaux de son
 `report_id`, sans le préfixe `sha256:`, et le placer sous le protocole annoncé.
 Les données du rapport sont diffusées sous `CC0-1.0`.
 
-## Valider et construire l'index
+## Valider et prévisualiser le catalogue
 
 ```bash
 python scripts/build_catalog.py validate
-python scripts/build_catalog.py build
-python scripts/build_catalog.py check
+python scripts/build_site.py
 ```
 
 Chaque rapport est d'abord confié à `perfcomparator validate-public`. Le script
-contrôle ensuite son emplacement, son nom, son unicité et produit
-`catalog/index.json` dans un ordre déterministe. `check` vérifie que l'index
-suivi correspond exactement aux rapports présents.
+contrôle ensuite son emplacement, son nom et son unicité. `build_site.py`
+produit l'index dans `_site/catalog/index.json`, dans un ordre déterministe,
+sans modifier les fichiers suivis par Git.
 
-Deux workflows sont préparés avec des actions épinglées par SHA :
+Trois workflows sont préparés avec des actions épinglées par SHA :
 
 - `validate-reports.yml` s'exécute sur `pull_request`, sans secret et avec le
   seul droit `contents: read` ;
 - `auto-merge-reports.yml` s'exécute depuis `main` après une validation réussie,
-  refuse toute modification autre qu'un nouveau rapport et l'index, vérifie que
-  le commit validé est toujours en tête, puis fusionne la pull request ;
+  exige exactement un nouveau rapport, vérifie que le commit validé est
+  toujours en tête, puis fusionne la pull request ;
 - `deploy-pages.yml` revalide le catalogue sur `main`, assemble `_site`, puis
   demande uniquement `pages: write` et `id-token: write` dans son job de
   déploiement.
@@ -119,8 +118,16 @@ La fusion réalisée avec le jeton éphémère de GitHub Actions ne déclenchant
 un second workflow par événement `push`, l'automatisation demande explicitement
 le lancement de `deploy-pages.yml` par `workflow_dispatch`.
 
-Tous deux installent le validateur depuis une révision exacte de
-`frchalaoux/perfcomparator`.
+Les workflows de validation et de déploiement installent le validateur depuis
+une révision exacte de `frchalaoux/perfcomparator`.
+
+## Retirer un rapport
+
+Supprimer uniquement son fichier sous `reports/`, puis ouvrir une pull request.
+La suppression est contrôlée et fusionnée manuellement afin qu'un contributeur
+ne puisse pas retirer le rapport d'un autre. Après fusion, le déploiement
+reconstruit automatiquement l'index et le rapport disparaît du site ; aucun
+fichier d'index n'est à corriger.
 
 ## Prévisualiser le site
 

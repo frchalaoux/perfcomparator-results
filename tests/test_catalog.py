@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from scripts.build_catalog import build_index, check_index, load_entry, serialize_index
+from scripts.build_catalog import build_index, load_entry
 from scripts.build_site import build_site
 
 
@@ -84,45 +84,41 @@ def test_load_entry_rejects_a_filename_different_from_the_content_id(validate, t
         load_entry(path, catalog_root=tmp_path)
 
 
-def test_empty_index_matches_the_tracked_initial_state(tmp_path) -> None:
-    index = build_index(reports_root=tmp_path / "reports")
-    destination = tmp_path / "index.json"
-    destination.write_text(serialize_index(index), encoding="utf-8")
-
-    check_index(index, destination)
-
-
-def test_check_rejects_a_stale_index(tmp_path) -> None:
-    destination = tmp_path / "index.json"
-    destination.write_text("{}\n", encoding="utf-8")
-
-    with pytest.raises(ValueError, match="doit être régénéré"):
-        check_index(build_index(reports_root=tmp_path / "reports"), destination)
-
-
-def test_build_site_assembles_only_public_assets(tmp_path) -> None:
+@patch("scripts.build_site.build_index")
+def test_build_site_generates_the_index_and_assembles_only_public_assets(
+    generated_index, tmp_path
+) -> None:
     site = tmp_path / "sources" / "site"
-    catalog = tmp_path / "sources" / "catalog"
     reports = tmp_path / "sources" / "reports"
-    for path in (site, catalog, reports / "protocol-0.3.0"):
+    for path in (site, reports / "protocol-0.3.0"):
         path.mkdir(parents=True)
     for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs"):
         (site / name).write_text(name, encoding="utf-8")
-    (catalog / "index.json").write_text("{}\n", encoding="utf-8")
     (reports / "protocol-0.3.0" / "public.json").write_text("{}\n", encoding="utf-8")
     destination = tmp_path / "built"
+    generated_index.return_value = {
+        "format": "perfcomparator-community-catalog",
+        "format_version": 1,
+        "report_count": 1,
+        "reports": [],
+    }
 
     build_site(
         destination,
         site_source=site,
-        catalog_source=catalog,
         reports_source=reports,
+        validator="/fake/perfcomparator",
     )
 
     assert (destination / "index.html").read_text(encoding="utf-8") == "index.html"
-    assert (destination / "catalog" / "index.json").exists()
+    index = json.loads((destination / "catalog" / "index.json").read_text(encoding="utf-8"))
+    assert index["report_count"] == 1
     assert (destination / "reports" / "protocol-0.3.0" / "public.json").exists()
     assert (destination / ".nojekyll").exists()
+    generated_index.assert_called_once_with(
+        reports_root=reports,
+        validator="/fake/perfcomparator",
+    )
 
 
 def test_build_site_rejects_a_stale_destination(tmp_path) -> None:
@@ -131,3 +127,17 @@ def test_build_site_rejects_a_stale_destination(tmp_path) -> None:
 
     with pytest.raises(ValueError, match="existe déjà"):
         build_site(destination)
+
+
+@patch("scripts.build_site.build_index", side_effect=ValueError("rapport invalide"))
+def test_build_site_validates_before_creating_the_destination(_build_index, tmp_path) -> None:
+    site = tmp_path / "site"
+    site.mkdir()
+    for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs"):
+        (site / name).write_text(name, encoding="utf-8")
+    destination = tmp_path / "built"
+
+    with pytest.raises(ValueError, match="rapport invalide"):
+        build_site(destination, site_source=site, reports_source=tmp_path / "reports")
+
+    assert not destination.exists()
