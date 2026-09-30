@@ -1,0 +1,401 @@
+{
+  "failed_benchmarks": [],
+  "format": "perfcomparator-public-report",
+  "format_version": 3,
+  "license": "CC0-1.0",
+  "profile": "standard",
+  "protocol_version": "0.3.0",
+  "readiness_suitable": false,
+  "repetitions": 3,
+  "report_id": "sha256:a02dfa02606316114524cb718fe1eb1842a4b3789126c7ec0753ca828f03e260",
+  "requested_benchmarks": [
+    "cpu.integer",
+    "cpu.float",
+    "cpu.hash",
+    "cpu.compression",
+    "cpu.multicore",
+    "memory.copy",
+    "storage.write",
+    "storage.read",
+    "storage.random-read",
+    "storage.random-write",
+    "application.json",
+    "application.sqlite",
+    "gpu.compute-fp32",
+    "gpu.memory",
+    "gpu.image-filter",
+    "gpu.raster"
+  ],
+  "results": [
+    {
+      "benchmark_id": "cpu.integer",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 3.571890257241306,
+      "minimum": 3.5602234200262872,
+      "name": "Entiers mono-cœur",
+      "parameters": {
+        "workers": 1
+      },
+      "relative_spread_percent": 0.3272149357103161,
+      "repetitions": 3,
+      "sample_values": [
+        3.5602234200262872,
+        3.565496541193116,
+        3.571890257241306
+      ],
+      "unit": "Mop/s",
+      "value": 3.565496541193116
+    },
+    {
+      "benchmark_id": "cpu.float",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 5.08826161069056,
+      "minimum": 5.06352236300057,
+      "name": "Flottants mono-cœur",
+      "parameters": {
+        "workers": 1
+      },
+      "relative_spread_percent": 0.48639469629394116,
+      "repetitions": 3,
+      "sample_values": [
+        5.086249475680779,
+        5.08826161069056,
+        5.06352236300057
+      ],
+      "unit": "Mop/s",
+      "value": 5.086249475680779
+    },
+    {
+      "benchmark_id": "cpu.hash",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 318.93200210266576,
+      "minimum": 318.04289348471485,
+      "name": "SHA-256",
+      "parameters": {
+        "block_size_bytes": 1048576
+      },
+      "relative_spread_percent": 0.27878745894802603,
+      "repetitions": 3,
+      "sample_values": [
+        318.91987584587355,
+        318.04289348471485,
+        318.93200210266576
+      ],
+      "unit": "Mio/s",
+      "value": 318.91987584587355
+    },
+    {
+      "benchmark_id": "cpu.compression",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 26.87140912880624,
+      "minimum": 26.752538192338378,
+      "name": "Compression zlib",
+      "parameters": {
+        "block_size_bytes": 1048576,
+        "compression_level": 6
+      },
+      "relative_spread_percent": 0.442722292809518,
+      "repetitions": 3,
+      "sample_values": [
+        26.752538192338378,
+        26.850000191656317,
+        26.87140912880624
+      ],
+      "unit": "Mio/s",
+      "value": 26.850000191656317
+    },
+    {
+      "benchmark_id": "cpu.multicore",
+      "group": "cpu",
+      "higher_is_better": true,
+      "maximum": 16.011887576983508,
+      "minimum": 15.836085591875536,
+      "name": "Entiers multicœur",
+      "parameters": {
+        "workers": 12
+      },
+      "relative_spread_percent": 1.109366731230791,
+      "repetitions": 3,
+      "sample_values": [
+        15.836085591875536,
+        15.847057619343586,
+        16.011887576983508
+      ],
+      "unit": "Mop/s",
+      "value": 15.847057619343586
+    },
+    {
+      "benchmark_id": "memory.copy",
+      "group": "memory",
+      "higher_is_better": true,
+      "maximum": 7900.00233585185,
+      "minimum": 7747.850730776955,
+      "name": "Copie mémoire",
+      "parameters": {
+        "buffer_size_bytes": 67108864
+      },
+      "relative_spread_percent": 1.934031881063112,
+      "repetitions": 3,
+      "sample_values": [
+        7900.00233585185,
+        7747.850730776955,
+        7867.068095654107
+      ],
+      "unit": "Mio/s",
+      "value": 7867.068095654107
+    },
+    {
+      "benchmark_id": "storage.write",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 1274.56119251875,
+      "minimum": 1010.8366426493726,
+      "name": "Écriture séquentielle",
+      "parameters": {
+        "file_size_bytes": 134217728
+      },
+      "relative_spread_percent": 23.981672236213743,
+      "repetitions": 3,
+      "sample_values": [
+        1010.8366426493726,
+        1099.6920784829078,
+        1274.56119251875
+      ],
+      "unit": "Mio/s",
+      "value": 1099.6920784829078
+    },
+    {
+      "benchmark_id": "storage.read",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 5828.102837878131,
+      "minimum": 5809.5860080353605,
+      "name": "Lecture séquentielle",
+      "parameters": {
+        "file_size_bytes": 134217728
+      },
+      "relative_spread_percent": 0.31857107756699177,
+      "repetitions": 3,
+      "sample_values": [
+        5812.464202396654,
+        5809.5860080353605,
+        5828.102837878131
+      ],
+      "unit": "Mio/s",
+      "value": 5812.464202396654
+    },
+    {
+      "benchmark_id": "storage.random-read",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 279748.22936615226,
+      "minimum": 260138.11453884118,
+      "name": "Lecture aléatoire 4 Kio",
+      "parameters": {
+        "block_size_bytes": 4096,
+        "operations": 4096
+      },
+      "relative_spread_percent": 7.025856977947107,
+      "repetitions": 3,
+      "sample_values": [
+        260138.11453884118,
+        279748.22936615226,
+        279113.4930423957
+      ],
+      "unit": "IOPS",
+      "value": 279113.4930423957
+    },
+    {
+      "benchmark_id": "storage.random-write",
+      "group": "storage",
+      "higher_is_better": true,
+      "maximum": 11774.081793139447,
+      "minimum": 11295.081061429446,
+      "name": "Écriture aléatoire 4 Kio",
+      "parameters": {
+        "block_size_bytes": 4096,
+        "operations": 4096
+      },
+      "relative_spread_percent": 4.11948079740809,
+      "repetitions": 3,
+      "sample_values": [
+        11295.081061429446,
+        11627.696675061095,
+        11774.081793139447
+      ],
+      "unit": "IOPS",
+      "value": 11627.696675061095
+    },
+    {
+      "benchmark_id": "application.json",
+      "group": "application",
+      "higher_is_better": true,
+      "maximum": 68.4025779040115,
+      "minimum": 67.18432087111407,
+      "name": "JSON",
+      "parameters": {
+        "document_size_bytes": 234608
+      },
+      "relative_spread_percent": 1.7872903603904204,
+      "repetitions": 3,
+      "sample_values": [
+        67.18432087111407,
+        68.4025779040115,
+        68.16223373080282
+      ],
+      "unit": "cycles/s",
+      "value": 68.16223373080282
+    },
+    {
+      "benchmark_id": "application.sqlite",
+      "group": "application",
+      "higher_is_better": true,
+      "maximum": 445321.3415517795,
+      "minimum": 418462.262085992,
+      "name": "SQLite",
+      "parameters": {
+        "rows": 20000
+      },
+      "relative_spread_percent": 6.037475874695835,
+      "repetitions": 3,
+      "sample_values": [
+        418462.262085992,
+        445321.3415517795,
+        444872.6590918361
+      ],
+      "unit": "lignes/s",
+      "value": 444872.6590918361
+    },
+    {
+      "benchmark_id": "gpu.compute-fp32",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 160.20592349273755,
+      "minimum": 50.628037194223324,
+      "name": "Calcul GPU FP32",
+      "parameters": {
+        "element_count": 262144,
+        "gpu_adapter_type": "DiscreteGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "AMD Radeon Pro 560X",
+        "gpu_index": 0,
+        "operations_per_element": 256,
+        "wgpu_version": "0.32.0"
+      },
+      "relative_spread_percent": 73.8709620207684,
+      "repetitions": 3,
+      "sample_values": [
+        50.628037194223324,
+        148.33688813705584,
+        160.20592349273755
+      ],
+      "unit": "GFLOP/s",
+      "value": 148.33688813705584
+    },
+    {
+      "benchmark_id": "gpu.memory",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 72.83507386176957,
+      "minimum": 66.71861474274289,
+      "name": "Bande passante GPU",
+      "parameters": {
+        "buffer_size_bytes": 33554432,
+        "bytes_counted_per_element": 8,
+        "gpu_adapter_type": "DiscreteGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "AMD Radeon Pro 560X",
+        "gpu_index": 0,
+        "wgpu_version": "0.32.0"
+      },
+      "relative_spread_percent": 8.437737181979628,
+      "repetitions": 3,
+      "sample_values": [
+        66.71861474274289,
+        72.48932962844034,
+        72.83507386176957
+      ],
+      "unit": "Gio/s",
+      "value": 72.48932962844034
+    },
+    {
+      "benchmark_id": "gpu.image-filter",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 8673.876640789518,
+      "minimum": 8617.496467635983,
+      "name": "Filtre d'image GPU",
+      "parameters": {
+        "gpu_adapter_type": "DiscreteGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "AMD Radeon Pro 560X",
+        "gpu_index": 0,
+        "height": 1024,
+        "samples_per_pixel": 5,
+        "wgpu_version": "0.32.0",
+        "width": 1024
+      },
+      "relative_spread_percent": 0.6530458803495083,
+      "repetitions": 3,
+      "sample_values": [
+        8633.41686243553,
+        8617.496467635983,
+        8673.876640789518
+      ],
+      "unit": "Mpixel/s",
+      "value": 8633.41686243553
+    },
+    {
+      "benchmark_id": "gpu.raster",
+      "group": "gpu",
+      "higher_is_better": true,
+      "maximum": 14603.561572777144,
+      "minimum": 3103.366019377388,
+      "name": "Remplissage raster GPU",
+      "parameters": {
+        "color_format": "rgba8unorm",
+        "gpu_adapter_type": "DiscreteGPU",
+        "gpu_backend": "Metal",
+        "gpu_device": "AMD Radeon Pro 560X",
+        "gpu_index": 0,
+        "height": 1024,
+        "wgpu_version": "0.32.0",
+        "width": 1024
+      },
+      "relative_spread_percent": 107.43463278764649,
+      "repetitions": 3,
+      "sample_values": [
+        3103.366019377388,
+        10704.365301020622,
+        14603.561572777144
+      ],
+      "unit": "Mpixel/s",
+      "value": 10704.365301020622
+    }
+  ],
+  "source_schema_version": 6,
+  "suite_version": "0.4.0.dev7",
+  "system": {
+    "architecture": "x86_64",
+    "commercial_name": "Apple MacBook Pro 15 pouces (2018)",
+    "gpu_devices": [
+      "Intel UHD Graphics 630",
+      "Radeon Pro 560X"
+    ],
+    "logical_cpu_count": 12,
+    "manufacturer": "Apple",
+    "memory_bytes": 34359738368,
+    "model_identifier": "MacBookPro15,1",
+    "operating_system": "Darwin",
+    "physical_cpu_count": 6,
+    "processor": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz",
+    "product_sku": "MR972LL/A",
+    "python_implementation": "CPython",
+    "python_version": "3.14.4"
+  },
+  "verification": "community-unverified"
+}
