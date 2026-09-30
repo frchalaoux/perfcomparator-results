@@ -86,19 +86,22 @@ def merge_validated_report(event: dict[str, object], client: GitHubClient) -> st
     if pull_request.get("state") != "open":
         return f"La pull request #{number} n'est plus ouverte."
     if pull_request.get("draft"):
-        raise ValueError("Une pull request en brouillon ne peut pas être fusionnée.")
+        return f"Pull request #{number} ignorée : elle est encore en brouillon."
     if pull_request.get("base", {}).get("ref") != "main":
-        raise ValueError("La pull request ne cible pas main.")
+        return f"Pull request #{number} ignorée : elle ne cible pas main."
     head_sha = pull_request.get("head", {}).get("sha")
     if not isinstance(validated_sha, str) or head_sha != validated_sha:
         raise ValueError("La tête de la pull request a changé depuis sa validation.")
     if pull_request.get("changed_files") != 1:
-        raise ValueError("La pull request ne contient pas exactement un fichier.")
+        return f"Pull request #{number} ignorée : elle ne contient pas un unique rapport."
 
     files = client.request("GET", f"/pulls/{number}/files?per_page=100")
     if not isinstance(files, list):
         raise TypeError("La liste des fichiers de la pull request est invalide.")
-    validate_changed_files(files)
+    try:
+        validate_changed_files(files)
+    except ValueError:
+        return f"Pull request #{number} ignorée : elle ne contient pas un unique rapport ajouté."
 
     result = client.request(
         "PUT",
