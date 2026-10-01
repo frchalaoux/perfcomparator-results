@@ -96,6 +96,45 @@ def test_merge_rejects_a_head_changed_after_validation() -> None:
     assert all(call[0] != "PUT" for call in client.calls)
 
 
+def test_maintenance_pull_request_is_ignored_without_failing() -> None:
+    client = FakeGitHubClient(
+        [
+            {
+                "state": "open",
+                "draft": False,
+                "base": {"ref": "main"},
+                "head": {"sha": "abc123"},
+                "changed_files": 2,
+            }
+        ]
+    )
+
+    message = merge_validated_report(successful_event(), client)
+
+    assert "ignorée" in message
+    assert client.calls == [("GET", "/pulls/42", None)]
+
+
+def test_non_report_pull_request_is_ignored_without_failing() -> None:
+    client = FakeGitHubClient(
+        [
+            {
+                "state": "open",
+                "draft": False,
+                "base": {"ref": "main"},
+                "head": {"sha": "abc123"},
+                "changed_files": 1,
+            },
+            [{"filename": "README.md", "status": "modified"}],
+        ]
+    )
+
+    message = merge_validated_report(successful_event(), client)
+
+    assert "ignorée" in message
+    assert all(call[0] != "PUT" for call in client.calls)
+
+
 def test_unsuccessful_validation_does_nothing() -> None:
     event = successful_event()
     event["workflow_run"]["conclusion"] = "failure"
