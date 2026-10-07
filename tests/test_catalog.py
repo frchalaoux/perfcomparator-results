@@ -92,7 +92,7 @@ def test_build_site_generates_the_index_and_assembles_only_public_assets(
     reports = tmp_path / "sources" / "reports"
     for path in (site, reports / "protocol-0.3.0"):
         path.mkdir(parents=True)
-    for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs"):
+    for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs", "zip.mjs"):
         (site / name).write_text(name, encoding="utf-8")
     (reports / "protocol-0.3.0" / "public.json").write_text("{}\n", encoding="utf-8")
     destination = tmp_path / "built"
@@ -113,6 +113,7 @@ def test_build_site_generates_the_index_and_assembles_only_public_assets(
     assert (destination / "index.html").read_text(encoding="utf-8") == "index.html"
     index = json.loads((destination / "catalog" / "index.json").read_text(encoding="utf-8"))
     assert index["report_count"] == 1
+    assert (destination / "zip.mjs").read_text(encoding="utf-8") == "zip.mjs"
     assert (destination / "reports" / "protocol-0.3.0" / "public.json").exists()
     assert (destination / ".nojekyll").exists()
     generated_index.assert_called_once_with(
@@ -133,7 +134,7 @@ def test_build_site_rejects_a_stale_destination(tmp_path) -> None:
 def test_build_site_validates_before_creating_the_destination(_build_index, tmp_path) -> None:
     site = tmp_path / "site"
     site.mkdir()
-    for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs"):
+    for name in ("index.html", "styles.css", "catalog.mjs", "app.mjs", "zip.mjs"):
         (site / name).write_text(name, encoding="utf-8")
     destination = tmp_path / "built"
 

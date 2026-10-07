@@ -70,13 +70,41 @@
             <span>Profil</span>
             <select id="profile"><option value="">Tous</option></select>
           </label>
+          <label>
+            <span>Trier par</span>
+            <select id="sort-order">
+              <option value="name-asc">Nom (A–Z)</option>
+              <option value="name-desc">Nom (Z–A)</option>
+              <option value="system-asc">Système</option>
+              <option value="memory-desc">Mémoire</option>
+              <option value="benchmarks-desc">Nombre de mesures</option>
+            </select>
+          </label>
           <button type="reset">Réinitialiser</button>
         </form>
+
+        <div class="selection-toolbar" aria-label="Sélection des rapports">
+          <label>
+            <input id="select-page" type="checkbox">
+            <span>Sélectionner cette page</span>
+          </label>
+          <button id="select-all-results" type="button">Sélectionner tous les résultats</button>
+          <button id="clear-selection" type="button" hidden>Effacer la sélection</button>
+          <button id="download-selection" class="download-selection" type="button" disabled>
+            Télécharger tout (.zip) · 0
+          </button>
+          <p id="download-status" role="status" aria-live="polite"></p>
+        </div>
 
         <div class="results-heading">
           <p id="results-summary" aria-live="polite">Chargement du catalogue…</p>
         </div>
         <div id="results" class="report-grid" aria-busy="true"></div>
+        <nav id="pagination" class="pagination" aria-label="Pagination des rapports" hidden>
+          <button id="previous-page" type="button" aria-label="Page précédente">←</button>
+          <span id="page-summary" aria-live="polite"></span>
+          <button id="next-page" type="button" aria-label="Page suivante">→</button>
+        </nav>
         <noscript>JavaScript est nécessaire pour filtrer et afficher le catalogue.</noscript>
       </section>
 
