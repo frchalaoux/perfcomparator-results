@@ -8,6 +8,7 @@ import {
   uniqueValues,
 } from "./catalog.mjs";
 import { createStoredZip } from "./zip.mjs";
+import { analyzePublicReports, renderComparisonHtml } from "./comparison.mjs";
 
 const PAGE_SIZE = 20;
 
@@ -26,8 +27,17 @@ const elements = {
   selectPage: document.querySelector("#select-page"),
   selectAllResults: document.querySelector("#select-all-results"),
   clearSelection: document.querySelector("#clear-selection"),
+  compareSelection: document.querySelector("#compare-selection"),
   downloadSelection: document.querySelector("#download-selection"),
   downloadStatus: document.querySelector("#download-status"),
+  comparisonBuilder: document.querySelector("#comparison-builder"),
+  comparisonForm: document.querySelector("#comparison-form"),
+  comparisonReference: document.querySelector("#comparison-reference"),
+  comparisonStatus: document.querySelector("#comparison-status"),
+  comparisonActions: document.querySelector("#comparison-actions"),
+  comparisonPreview: document.querySelector("#comparison-preview"),
+  downloadComparison: document.querySelector("#download-comparison"),
+  openComparison: document.querySelector("#open-comparison"),
   reportCount: document.querySelector("#report-count"),
   systemCount: document.querySelector("#system-count"),
   protocolCount: document.querySelector("#protocol-count"),
@@ -38,6 +48,9 @@ let currentPage = 1;
 let pageReports = [];
 let filteredReports = [];
 const selectedReportIds = new Set();
+let comparisonSelectionSignature = "";
+let comparisonUrl = null;
+let localDeletionEnabled = false;
 
 function addOptions(select, values) {
   for (const value of values) {
@@ -143,6 +156,42 @@ function reportCard(report) {
   const actions = document.createElement("div");
   actions.className = "report-actions";
   actions.append(selection, toggle, download);
+  if (localDeletionEnabled) {
+    const remove = document.createElement("button");
+    remove.className = "delete-report";
+    remove.type = "button";
+    remove.textContent = "Supprimer";
+    remove.setAttribute("aria-label", `Supprimer le rapport local ${machineName}`);
+    remove.addEventListener("click", async () => {
+      const confirmed = window.confirm(
+        `Supprimer ce rapport du catalogue local ?\n\n${machineName}\n${report.report_id}\n\nLe fichier source sera supprimé de reports/ mais restera récupérable avec Git.`,
+      );
+      if (!confirmed) return;
+      remove.disabled = true;
+      remove.textContent = "Suppression…";
+      elements.downloadStatus.textContent = `Suppression locale de ${machineName}…`;
+      try {
+        const response = await fetch("./__local/reports/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ report_id: report.report_id }),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+        selectedReportIds.delete(report.report_id);
+        elements.downloadStatus.textContent = "Rapport supprimé. Reconstruction du catalogue…";
+        await waitForReportRemoval(report.report_id);
+      } catch (error) {
+        elements.downloadStatus.textContent = error instanceof Error
+          ? `Suppression impossible : ${error.message}`
+          : "Suppression impossible.";
+        remove.disabled = false;
+        remove.textContent = "Supprimer";
+        console.error(error);
+      }
+    });
+    actions.append(remove);
+  }
 
   card.append(header, essentials, actions, details);
   return card;
@@ -166,8 +215,82 @@ function updateSelectionControls() {
   elements.selectPage.disabled = pageReports.length === 0;
   elements.selectAllResults.disabled = filteredReports.length === 0;
   elements.clearSelection.hidden = selectedReportIds.size === 0;
+  elements.compareSelection.disabled = selectedReportIds.size < 2;
+  elements.compareSelection.textContent = `Comparer · ${selectedReportIds.size}`;
   elements.downloadSelection.disabled = selectedReportIds.size === 0;
   elements.downloadSelection.textContent = `Télécharger tout (.zip) · ${selectedReportIds.size}`;
+  if (!elements.comparisonBuilder.hidden) synchronizeComparisonBuilder();
+}
+
+function selectedCatalogReports() {
+  return reports.filter((report) => selectedReportIds.has(report.report_id));
+}
+
+function clearComparisonResult() {
+  if (comparisonUrl) URL.revokeObjectURL(comparisonUrl);
+  comparisonUrl = null;
+  elements.comparisonActions.hidden = true;
+  elements.comparisonPreview.hidden = true;
+  elements.comparisonPreview.removeAttribute("src");
+  elements.downloadComparison.removeAttribute("href");
+}
+
+function synchronizeComparisonBuilder() {
+  const selected = selectedCatalogReports();
+  if (selected.length < 2) {
+    elements.comparisonBuilder.hidden = true;
+    comparisonSelectionSignature = "";
+    clearComparisonResult();
+    return;
+  }
+  const signature = selected.map((report) => report.report_id).join("|");
+  if (signature === comparisonSelectionSignature) return;
+  const previousReference = elements.comparisonReference.value;
+  elements.comparisonReference.replaceChildren();
+  for (const report of selected) {
+    const option = document.createElement("option");
+    option.value = report.report_id;
+    option.textContent = `${reportTitle(report)} · ${report.suite_version} · ${report.report_id.slice(-8)}`;
+    option.selected = report.report_id === previousReference;
+    elements.comparisonReference.append(option);
+  }
+  comparisonSelectionSignature = signature;
+  elements.comparisonStatus.textContent = `${selected.length} rapports prêts à comparer.`;
+  clearComparisonResult();
+}
+
+async function fetchPublicReport(report) {
+  const response = await fetch(`./${report.path}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status} pour ${report.path}`);
+  return response.json();
+}
+
+async function waitForReportRemoval(reportId) {
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    await new Promise((resolve) => window.setTimeout(resolve, 500));
+    const response = await fetch(`./catalog/index.json?refresh=${Date.now()}`, {
+      cache: "no-store",
+    });
+    if (!response.ok) continue;
+    const catalog = await response.json();
+    if (!catalog.reports.some((report) => report.report_id === reportId)) {
+      window.location.reload();
+      return;
+    }
+  }
+  throw new Error("la reconstruction prend trop de temps ; rechargez la page.");
+}
+
+async function enableLocalManagement() {
+  try {
+    const response = await fetch("./__local/capabilities", { cache: "no-store" });
+    if (!response.ok) return;
+    const capabilities = await response.json();
+    localDeletionEnabled = capabilities.delete_reports === true;
+    if (localDeletionEnabled) render();
+  } catch {
+    localDeletionEnabled = false;
+  }
 }
 
 function render() {
@@ -253,15 +376,52 @@ elements.clearSelection.addEventListener("click", () => {
   elements.downloadStatus.textContent = "";
   render();
 });
+elements.compareSelection.addEventListener("click", () => {
+  elements.comparisonBuilder.hidden = false;
+  synchronizeComparisonBuilder();
+  elements.comparisonBuilder.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+elements.comparisonForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const selected = selectedCatalogReports();
+  const referenceId = elements.comparisonReference.value;
+  const ordered = [
+    ...selected.filter((report) => report.report_id === referenceId),
+    ...selected.filter((report) => report.report_id !== referenceId),
+  ];
+  elements.comparisonForm.querySelector("button").disabled = true;
+  elements.comparisonStatus.textContent = "Chargement et analyse des rapports publics…";
+  clearComparisonResult();
+  try {
+    const publicReports = await Promise.all(ordered.map(fetchPublicReport));
+    const analysis = analyzePublicReports(publicReports);
+    const document = renderComparisonHtml(analysis);
+    comparisonUrl = URL.createObjectURL(new Blob([document], { type: "text/html;charset=utf-8" }));
+    elements.downloadComparison.href = comparisonUrl;
+    elements.comparisonPreview.src = comparisonUrl;
+    elements.comparisonPreview.hidden = false;
+    elements.comparisonActions.hidden = false;
+    elements.comparisonStatus.textContent = `Comparaison générée à partir de ${publicReports.length} rapports publics.`;
+  } catch (error) {
+    elements.comparisonStatus.textContent = error instanceof Error
+      ? error.message
+      : "Impossible de générer la comparaison.";
+    console.error(error);
+  } finally {
+    elements.comparisonForm.querySelector("button").disabled = false;
+  }
+});
+elements.openComparison.addEventListener("click", () => {
+  if (comparisonUrl) window.open(comparisonUrl, "_blank", "noopener");
+});
 elements.downloadSelection.addEventListener("click", async () => {
-  const selectedReports = reports.filter((report) => selectedReportIds.has(report.report_id));
+  const selectedReports = selectedCatalogReports();
   if (!selectedReports.length) return;
   elements.downloadSelection.disabled = true;
   elements.downloadStatus.textContent = `Préparation de ${selectedReports.length} rapport${selectedReports.length > 1 ? "s" : ""}…`;
   try {
     const files = await Promise.all(selectedReports.map(async (report) => {
       const response = await fetch(`./${report.path}`);
-      if (!response.ok) throw new Error(`HTTP ${response.status} pour ${report.path}`);
       return {
         name: report.path.split("/").at(-1),
         data: new Uint8Array(await response.arrayBuffer()),
@@ -287,6 +447,7 @@ try {
   const response = await fetch("./catalog/index.json", { cache: "no-store" });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   initialize(await response.json());
+  await enableLocalManagement();
 } catch (error) {
   elements.results.setAttribute("aria-busy", "false");
   elements.summary.textContent = "Catalogue indisponible";

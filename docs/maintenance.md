@@ -5,7 +5,7 @@ contributions ou administrent le catalogue.
 
 ## Préparer l'environnement local
 
-Prérequis : Git, `uv`, Node.js avec son test runner natif et PerfComparator.
+Prérequis : Git, `uv`, `jq`, Node.js avec son test runner natif et PerfComparator.
 Le projet demande Python 3.14 ; `uv` installe la version compatible déclarée.
 
 ```bash
@@ -48,7 +48,71 @@ uv run python scripts/build_catalog.py validate
 
 ## Construire et prévisualiser le site
 
-Choisir un dossier de sortie qui n'existe pas encore :
+Pour développer avec reconstruction automatique et sans cache navigateur :
+
+```bash
+uv run python scripts/serve_site.py
+```
+
+Ouvrir `http://localhost:8000/` et conserver la commande active. Toute
+modification sous `site/` ou `reports/` déclenche une nouvelle construction.
+Une construction invalide est signalée dans le terminal sans remplacer le
+dernier aperçu valide. Arrêter le serveur avec `Ctrl+C`.
+
+Dans cette version locale uniquement, chaque fiche propose **Supprimer**. Après
+confirmation, le serveur retire le JSON correspondant sous `reports/` et
+l'observateur reconstruit l'index. Vérifier ensuite `git status` : la suppression
+reste une modification locale ordinaire et ne devient distante qu'après le
+parcours de revue et de publication. Pour annuler immédiatement la suppression
+d'un fichier suivi :
+
+```bash
+git restore reports/protocol-VERSION/IDENTIFIANT.json
+```
+
+Ne jamais utiliser cette interface pour contourner la revue obligatoire d'un
+retrait public.
+
+### Ajouter un rapport à l'aperçu local
+
+Le fichier doit être un export public PerfComparator, jamais le rapport privé
+produit directement par `perfcomparator run`. Le valider avant de le copier :
+
+```bash
+perfcomparator validate-public /chemin/vers/rapport-public.json
+```
+
+Extraire son protocole et son identifiant, puis construire le chemin imposé par
+le catalogue :
+
+```bash
+report_file=/chemin/vers/rapport-public.json
+protocol=$(jq -r '.protocol_version' "$report_file")
+digest=$(jq -r '.report_id | sub("^sha256:"; "")' "$report_file")
+
+mkdir -p "reports/protocol-$protocol"
+cp "$report_file" "reports/protocol-$protocol/$digest.json"
+```
+
+Avec `serve_site.py` actif, le terminal doit ensuite afficher :
+
+```text
+Changement détecté, reconstruction…
+Aperçu reconstruit. Rechargez la page si nécessaire.
+```
+
+Contrôler enfin que seul le rapport public attendu apparaît dans l'état Git :
+
+```bash
+git status --short
+```
+
+Cet ajout reste strictement local. Il ne crée ni branche distante, ni pull
+request, ni publication GitHub Pages. La publication suit séparément le guide
+de contribution et exige les validations et autorisations prévues par le dépôt.
+
+Pour produire ponctuellement un artefact immuable, choisir un dossier de sortie
+qui n'existe pas encore :
 
 ```bash
 uv run python scripts/build_site.py --output _site-preview
@@ -59,7 +123,7 @@ Ouvrir `http://localhost:8000/`. Il faut un serveur HTTP : ouvrir directement
 `index.html` avec une URL `file://` empêche généralement le chargement des
 modules et de l'index.
 
-Après inspection, supprimer uniquement le dossier généré choisi. Le script
+Après inspection, supprimer uniquement le dossier généré choisi. `build_site.py`
 refuse volontairement d'écraser une destination existante afin qu'un ancien
 fichier ne reste pas silencieusement dans un nouvel artefact.
 

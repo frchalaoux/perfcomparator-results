@@ -34,6 +34,7 @@ def build_site(
         site_source / "catalog.mjs",
         site_source / "app.mjs",
         site_source / "zip.mjs",
+        site_source / "comparison.mjs",
     )
     missing = [path for path in required if not path.is_file()]
     if missing:

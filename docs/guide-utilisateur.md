@@ -12,7 +12,8 @@ L'interface permet :
 - une recherche libre dans le fabricant, le nom commercial, l'identifiant de
   modèle, la référence commerciale, le processeur et les GPU ;
 - un filtre par système d'exploitation ;
-- un filtre par profil de mesure.
+- un filtre par profil de mesure ;
+- le tri, la pagination et la sélection individuelle ou groupée des rapports.
 
 Chaque fiche présente les informations matérielles utiles, le nombre de
 mesures et un bouton **Télécharger le JSON**. Le nom commercial et la référence
@@ -34,7 +35,31 @@ Une validation réussie signifie que le schéma, les champs autorisés et
 l'identifiant de contenu sont cohérents. Elle ne garantit ni l'origine du
 fichier ni la véracité des performances déclarées.
 
-## Comparer deux rapports
+## Comparer les rapports dans le navigateur
+
+1. Cocher au moins deux fiches compatibles.
+2. Cliquer sur **Comparer**.
+3. Choisir la machine de référence, ramenée à l'indice 100.
+4. Cliquer sur **Générer la comparaison**.
+
+Le rapport public s'affiche sur place. Il peut être ouvert dans un nouvel onglet
+ou téléchargé sous forme de fichier HTML autonome. Le calcul et la génération
+ont lieu dans le navigateur : les rapports ne sont envoyés ni au catalogue ni à
+un service tiers.
+
+Deux rapports sont comparables lorsqu'ils utilisent :
+
+- le même `protocol_version` ;
+- le même profil ;
+- la même version et la même implémentation de Python ;
+- des benchmarks communs aux unités, sens de mesure et paramètres compatibles.
+
+Des versions différentes de la suite PerfComparator peuvent rester compatibles
+si leur protocole de mesure est identique. La version du schéma source peut
+différer : elle décrit le stockage d'origine, pas le protocole de mesure. La
+page refuse les associations qu'elle ne peut pas interpréter de manière sûre.
+
+## Comparer avec PerfComparator installé
 
 Le premier fichier donné à la commande devient la référence 100 :
 
@@ -45,19 +70,9 @@ perfcomparator compare \
   --html comparaison.html
 ```
 
-Le rapport HTML est produit et consulté localement. Il n'est envoyé ni au
-catalogue ni à un service tiers.
-
-Deux rapports sont comparables lorsqu'ils utilisent :
-
-- le même `protocol_version` ;
-- le même profil ;
-- la même version de Python ;
-- des benchmarks communs.
-
-Des versions différentes de la suite PerfComparator peuvent rester compatibles
-si leur protocole de mesure est identique. La commande refuse les associations
-qu'elle ne peut pas interpréter de manière sûre.
+Cette voie permet notamment de comparer un rapport public téléchargé avec un
+rapport privé conservé sur votre machine. Le fichier privé ne doit jamais être
+chargé dans le catalogue public.
 
 ## Interpréter prudemment
 

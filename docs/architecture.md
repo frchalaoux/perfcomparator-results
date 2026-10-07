@@ -59,6 +59,19 @@ Les JSON sous `reports/` sont l'unique source de vérité. `build_catalog.py` :
 L'index n'est pas versionné : il ne peut donc pas devenir incohérent avec les
 rapports à cause d'un commit oublié.
 
+En développement, `serve_site.py` observe les sources sous `site/` et
+`reports/`. Il construit d'abord une destination temporaire, puis remplace
+atomiquement `_site` uniquement si la validation et l'assemblage ont réussi.
+Une erreur conserve donc le dernier aperçu valide. Son serveur HTTP ajoute
+`Cache-Control: no-store` pour éviter qu'un ancien module JavaScript masque une
+modification locale.
+
+Ce serveur expose également deux routes réservées à la boucle locale : une
+détection de capacité et la suppression d'un rapport par son `report_id` exact.
+Les écritures exigent une adresse cliente locale, un hôte local, la même origine
+HTTP et un corps JSON borné. Les chemins libres ne sont jamais acceptés. Le site
+statique publié ne possède ni ces routes ni le bouton de suppression.
+
 Le format d'index courant expose :
 
 ```json
@@ -79,10 +92,15 @@ Les résultats détaillés restent uniquement dans le JSON téléchargeable.
 Le site utilise du HTML, du CSS et des modules JavaScript natifs. `app.mjs`
 charge l'index avec `cache: "no-store"`, construit les filtres et crée les
 fiches. `catalog.mjs` porte les fonctions pures de recherche, de tri et de
-présentation testées avec le test runner natif de Node.js.
+présentation. `comparison.mjs` charge uniquement les rapports publics
+sélectionnés, vérifie leur compatibilité, calcule les indices et produit un
+rapport HTML autonome dans le navigateur. `zip.mjs` assemble les téléchargements
+groupés sans dépendance externe. Ces modules sont testés avec le test runner
+natif de Node.js.
 
 Cette architecture peut être servie par n'importe quel hébergement de fichiers
-statiques. Aucun traitement n'est exécuté côté serveur après le déploiement.
+statiques. Aucun traitement n'est exécuté côté serveur après le déploiement et
+les rapports sélectionnés pour une comparaison ne quittent pas le navigateur.
 
 ## Workflows et frontières de confiance
 
