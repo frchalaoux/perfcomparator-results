@@ -3,7 +3,7 @@
 Catalogue statique de rapports publics produits par
 [PerfComparator](https://github.com/frchalaoux/perfcomparator). Il permet de
 rechercher une configuration, de télécharger son rapport JSON puis de la
-comparer localement avec d'autres machines.
+comparer directement dans le navigateur avec d'autres machines.
 
 Les rapports sont communautaires et **non certifiés** : leur validation prouve
 la conformité du fichier et son intégrité, jamais l'identité de la machine ni
@@ -27,11 +27,15 @@ et de déploiement.
 
 ## Utilisation rapide
 
-Le catalogue se consulte sans compte GitHub. Depuis une fiche de machine :
+Le catalogue se consulte sans compte GitHub :
 
-1. cliquer sur **Télécharger le JSON** ;
-2. vérifier le fichier avec `perfcomparator validate-public` ;
-3. le comparer à un rapport local compatible.
+1. sélectionner au moins deux rapports compatibles ;
+2. cliquer sur **Comparer** et choisir la machine de référence ;
+3. consulter ou télécharger le rapport HTML public autonome.
+
+Le calcul est effectué dans le navigateur. Aucun rapport n'est envoyé à un
+serveur. Le téléchargement et la comparaison en ligne de commande restent
+disponibles :
 
 ```bash
 perfcomparator validate-public rapport-telecharge.json
@@ -103,6 +107,24 @@ uv run python scripts/build_site.py --output _site-preview
 La construction exige que le dossier de sortie n'existe pas déjà. Le
 [guide de maintenance](docs/maintenance.md) décrit l'installation du validateur,
 la prévisualisation HTTP et la procédure complète de publication.
+
+Pendant le développement, une seule commande reconstruit et sert automatiquement
+le catalogue sans cache navigateur. Cette version locale affiche aussi un
+bouton **Supprimer** sur chaque fiche ; ce bouton n'existe pas sur GitHub Pages.
+
+```bash
+uv run python scripts/serve_site.py
+```
+
+La suppression locale demande une confirmation, retire le JSON source sous
+`reports/`, puis déclenche la reconstruction. Un fichier suivi reste récupérable
+avec Git tant que sa suppression n'a pas été publiée.
+
+Pour ajouter un rapport à cet aperçu, valider son export public puis le copier
+sous `reports/protocol-<protocol_version>/<report_id sans sha256:>.json`.
+L'observateur reconstruit automatiquement le catalogue. Cette opération reste
+locale et ne publie rien sur GitHub. Les commandes complètes figurent dans
+[Ajouter un rapport à l'aperçu local](docs/maintenance.md#ajouter-un-rapport-à-laperçu-local).
 
 ## Licences
 

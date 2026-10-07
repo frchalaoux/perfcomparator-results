@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -11,6 +12,11 @@ import {
   sortReports,
 } from "../site/catalog.mjs";
 import { createStoredZip } from "../site/zip.mjs";
+import {
+  analyzePublicReports,
+  differenceLabel,
+  renderComparisonHtml,
+} from "../site/comparison.mjs";
 
 const reports = [
   {
@@ -112,4 +118,71 @@ test("a dependency-free ZIP archive stores every selected JSON file", () => {
   assert.equal(view.getUint16(archive.length - 12, true), 2);
   assert.match(new TextDecoder().decode(archive), /first\.json/);
   assert.match(new TextDecoder().decode(archive), /second\.json/);
+});
+
+function publicReport(name) {
+  return JSON.parse(readFileSync(new URL(`../reports/protocol-0.3.0/${name}.json`, import.meta.url)));
+}
+
+test("browser comparison matches the Python engine on catalog reports", () => {
+  const baseline = publicReport("001693a8b7239b59e78e36299367fb64f3de856206320706501ff850a963ff34");
+  const candidate = publicReport("07aa57fe532cd16f8e6bb8be935555a5a09105b4b6bf6574ca9e6ac99f6790b1");
+  const analysis = analyzePublicReports([baseline, candidate]);
+
+  assert.equal(analysis.common_benchmarks.length, 16);
+  assert.ok(Math.abs(analysis.machines[1].overall_index - 104.47523589893122) < 1e-10);
+  assert.ok(Math.abs(analysis.machines[1].categories.application - 117.09562438226193) < 1e-10);
+  assert.ok(analysis.warnings.some((warning) => warning.includes("Versions compatibles")));
+});
+
+test("public comparisons reject incompatible reports", () => {
+  const baseline = publicReport("001693a8b7239b59e78e36299367fb64f3de856206320706501ff850a963ff34");
+  const candidate = structuredClone(baseline);
+  candidate.profile = "quick";
+
+  assert.throws(() => analyzePublicReports([baseline, candidate]), /même profil/);
+
+  const changedParameters = structuredClone(baseline);
+  changedParameters.results.find((result) => result.benchmark_id === "cpu.hash")
+    .parameters.block_size_bytes = 42;
+  assert.throws(
+    () => analyzePublicReports([baseline, changedParameters]),
+    /Paramètres incohérents pour cpu\.hash/,
+  );
+});
+
+test("public comparisons accept different source schemas under the same protocol", () => {
+  const baseline = publicReport("c73e0b97f61ccc0f7afd3f01e646d190540baf5c476a6e3bdb739fb3a8d36188");
+  const candidate = structuredClone(baseline);
+  candidate.source_schema_version = 4;
+
+  const analysis = analyzePublicReports([baseline, candidate]);
+
+  assert.equal(analysis.common_benchmarks.length, 16);
+  assert.equal(analysis.machines[1].overall_index, 100);
+});
+
+test("the generated public HTML report is autonomous and traceable", () => {
+  const baseline = publicReport("001693a8b7239b59e78e36299367fb64f3de856206320706501ff850a963ff34");
+  const candidate = publicReport("07aa57fe532cd16f8e6bb8be935555a5a09105b4b6bf6574ca9e6ac99f6790b1");
+  const document = renderComparisonHtml(analyzePublicReports([baseline, candidate]));
+
+  assert.match(document, /rapport HTML public autonome/);
+  assert.match(document, /Rapports communautaires non certifiés/);
+  assert.match(document, /Scénarios d’usage/);
+  assert.match(document, /Carte thermique/);
+  assert.match(document, /Sources publiques/);
+  assert.match(document, /sha256:001693a8b723/);
+  assert.doesNotMatch(document, /https:\/\//);
+  assert.equal(differenceLabel(20), "différence nette en faveur de cette machine");
+});
+
+test("public report text is escaped in the autonomous HTML", () => {
+  const baseline = publicReport("001693a8b7239b59e78e36299367fb64f3de856206320706501ff850a963ff34");
+  const candidate = structuredClone(baseline);
+  candidate.system.commercial_name = "<script>alert('unsafe')</script>";
+  const document = renderComparisonHtml(analyzePublicReports([baseline, candidate]));
+
+  assert.doesNotMatch(document, /<script>alert/);
+  assert.match(document, /&lt;script&gt;alert\(&#39;unsafe&#39;\)&lt;\/script&gt;/);
 });

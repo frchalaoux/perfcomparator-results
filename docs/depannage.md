@@ -92,16 +92,49 @@ qu'il ne contient rien à conserver.
 
 ## Le site local ne charge pas l'index
 
-Ne pas ouvrir `site/index.html` directement. Construire l'artefact puis le
-servir en HTTP :
+Ne pas ouvrir `site/index.html` directement. Utiliser le serveur local supervisé :
 
 ```bash
-uv run python scripts/build_site.py --output _site-preview
-python -m http.server 8000 --directory _site-preview
+uv run python scripts/serve_site.py
 ```
 
 Ouvrir ensuite `http://localhost:8000/` et consulter la console du navigateur si
 le message persiste.
+
+## Le serveur local n'affiche pas la dernière modification
+
+`serve_site.py` désactive le cache et reconstruit automatiquement après une
+modification sous `site/` ou `reports/`. Vérifier dans le terminal que le message
+« Aperçu reconstruit » apparaît. Si la reconstruction est refusée, corriger
+l'erreur signalée ; le dernier aperçu valide reste volontairement servi.
+
+Une modification de `scripts/serve_site.py`, `build_site.py` ou
+`build_catalog.py` nécessite de relancer le serveur avec `Ctrl+C`, puis la même
+commande. Si le port 8000 est déjà utilisé, arrêter l'ancien serveur ou choisir
+un autre port avec `--port 8001`.
+
+## Le bouton « Supprimer » n'apparaît pas
+
+Ce bouton est volontairement réservé à `scripts/serve_site.py`. Il n'apparaît
+ni sur GitHub Pages ni avec `python -m http.server`. Arrêter l'ancien serveur,
+puis lancer :
+
+```bash
+uv run python scripts/serve_site.py
+```
+
+## Restaurer un rapport supprimé localement
+
+La suppression locale retire le JSON source et apparaît dans `git status`. Si
+le fichier était suivi et que la suppression ne doit pas être conservée :
+
+```bash
+git restore reports/protocol-VERSION/IDENTIFIANT.json
+```
+
+Le serveur détecte la restauration et reconstruit automatiquement le catalogue.
+Un rapport non suivi n'est pas récupérable par Git ; conserver une copie avant
+de supprimer une donnée locale qui n'a jamais été commitée.
 
 ## Une ancienne URL de rapport répond encore
 

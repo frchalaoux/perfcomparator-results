@@ -90,6 +90,9 @@
           </label>
           <button id="select-all-results" type="button">Sélectionner tous les résultats</button>
           <button id="clear-selection" type="button" hidden>Effacer la sélection</button>
+          <button id="compare-selection" class="compare-selection" type="button" disabled>
+            Comparer · 0
+          </button>
           <button id="download-selection" class="download-selection" type="button" disabled>
             Télécharger tout (.zip) · 0
           </button>
@@ -108,13 +111,35 @@
         <noscript>JavaScript est nécessaire pour filtrer et afficher le catalogue.</noscript>
       </section>
 
+      <section id="comparison-builder" class="comparison-builder" aria-labelledby="comparison-title" hidden>
+        <p class="eyebrow">Comparaison locale</p>
+        <h2 id="comparison-title">Générer un rapport HTML public</h2>
+        <p class="comparison-copy">
+          Les rapports sélectionnés sont analysés dans votre navigateur. Aucune donnée n’est
+          envoyée à un serveur. Choisissez la machine ramenée à l’indice 100.
+        </p>
+        <form id="comparison-form" class="comparison-form">
+          <label>
+            <span>Machine de référence</span>
+            <select id="comparison-reference" required></select>
+          </label>
+          <button type="submit">Générer la comparaison</button>
+        </form>
+        <p id="comparison-status" class="comparison-status" role="status" aria-live="polite"></p>
+        <div id="comparison-actions" class="comparison-actions" hidden>
+          <a id="download-comparison" class="download" download="comparaison-perfcomparator.html">Télécharger le rapport HTML</a>
+          <button id="open-comparison" type="button">Ouvrir dans un nouvel onglet</button>
+        </div>
+        <iframe id="comparison-preview" class="comparison-preview" title="Aperçu du rapport de comparaison" hidden></iframe>
+      </section>
+
       <section class="how-it-works" aria-labelledby="how-title">
         <p class="eyebrow">Mode d’emploi</p>
         <h2 id="how-title">Comparer sans envoyer vos données</h2>
         <ol>
           <li><span>01</span><div><h3>Choisir</h3><p>Filtrez le catalogue selon le matériel et le profil mesuré.</p></div></li>
-          <li><span>02</span><div><h3>Télécharger</h3><p>Récupérez uniquement les rapports publics utiles.</p></div></li>
-          <li><span>03</span><div><h3>Comparer</h3><p>Analysez-les localement avec PerfComparator, sans compte ni télémétrie.</p></div></li>
+          <li><span>02</span><div><h3>Sélectionner</h3><p>Cochez au moins deux rapports compatibles et choisissez votre référence.</p></div></li>
+          <li><span>03</span><div><h3>Comparer</h3><p>Générez ou téléchargez le rapport HTML, sans compte ni télémétrie.</p></div></li>
         </ol>
         <p class="contribute-callout">
           Vous souhaitez ajouter votre machine ?

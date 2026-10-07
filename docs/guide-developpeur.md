@@ -56,11 +56,14 @@ perfcomparator --version
 | --- | --- |
 | `scripts/build_catalog.py` | Découvrir et valider les rapports, construire l'index en mémoire |
 | `scripts/build_site.py` | Assembler l'artefact statique `_site` |
+| `scripts/serve_site.py` | Reconstruire automatiquement et servir l'aperçu local sans cache |
 | `scripts/auto_merge.py` | Revérifier et fusionner un ajout de rapport strictement borné |
 | `site/index.html` | Structure accessible de l'interface |
 | `site/styles.css` | Présentation et adaptation aux tailles d'écran |
 | `site/catalog.mjs` | Fonctions pures de recherche, statistiques et formatage |
 | `site/app.mjs` | Chargement de l'index et rendu du DOM |
+| `site/comparison.mjs` | Comparaison des rapports publics et génération du HTML autonome |
+| `site/zip.mjs` | Création locale des archives de rapports sélectionnés |
 | `tests/test_catalog.py` | Validation, indexation et assemblage Python |
 | `tests/test_auto_merge.py` | Garde-fous de l'automatisation privilégiée |
 | `tests/test_catalog_ui.mjs` | Comportement des fonctions de l'interface |
@@ -95,11 +98,33 @@ ajoute `.nojekyll`.
 La fonction refuse une destination existante. Ce choix évite qu'un fichier
 retiré des sources survive dans un artefact réutilisé.
 
+`serve_site.py` conserve cette règle : chaque reconstruction est réalisée dans
+un répertoire temporaire. La destination servie est remplacée seulement après
+une construction complète. En cas d'échec, le message apparaît dans le terminal
+et l'ancien aperçu reste accessible. L'observateur suit les créations,
+modifications et suppressions sous `site/` et `reports/` ; une modification des
+scripts Python eux-mêmes demande de relancer la commande.
+
+### Administration locale
+
+`LocalSiteHandler` annonce la suppression locale à l'interface via
+`/__local/capabilities`. `app.mjs` n'affiche donc **Supprimer** que lorsque le
+site est servi par `serve_site.py`; GitHub Pages répond normalement 404 et reste
+strictement en lecture seule.
+
+La route `POST /__local/reports/delete` accepte uniquement un objet JSON
+contenant un `report_id` complet. Le serveur résout lui-même le fichier sous
+`reports/protocol-*`, refuse les liens symboliques, les chemins fournis par le
+client, les requêtes non locales et les origines différentes. Toute évolution
+de cette route doit conserver ces tests de frontière et une confirmation côté
+interface.
+
 ### Interface
 
-Conserver autant que possible la logique testable dans `catalog.mjs`. Le rendu
-DOM et les événements appartiennent à `app.mjs`. Les valeurs provenant des
-rapports sont affectées avec `textContent`, jamais injectées comme HTML.
+Conserver autant que possible la logique testable dans `catalog.mjs` et
+`comparison.mjs`. Le rendu DOM et les événements appartiennent à `app.mjs`.
+Les valeurs provenant des rapports sont affectées avec `textContent` ou
+échappées explicitement lors de la génération du rapport HTML autonome.
 
 Le filtre libre normalise les accents et la casse. Les filtres système et
 profil utilisent une égalité exacte. Toute nouvelle information recherchable
@@ -124,12 +149,15 @@ d'adapter simultanément le consommateur web.
 2. placer la logique pure dans `catalog.mjs` ;
 3. éviter les dépendances ou appels réseau supplémentaires sans nécessité ;
 4. tester l'état vide, les filtres et les valeurs facultatives ;
-5. prévisualiser le résultat avec un serveur HTTP local.
+5. prévisualiser le résultat avec le serveur local supervisé.
 
 ```bash
-uv run python scripts/build_site.py --output _site-preview
-python -m http.server 8000 --directory _site-preview
+uv run python scripts/serve_site.py
 ```
+
+La commande reconstruit `_site` au démarrage puis après chaque changement sous
+`site/` ou `reports/`. Elle désactive le cache du navigateur. L'arrêter avec
+`Ctrl+C` avant de modifier `serve_site.py` ou les autres scripts de construction.
 
 ### Modifier l'auto-fusion
 
