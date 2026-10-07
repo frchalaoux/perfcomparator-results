@@ -36,6 +36,41 @@ export function filterReports(reports, filters) {
   });
 }
 
+export function sortReports(reports, order = "name-asc") {
+  const collator = new Intl.Collator("fr", { numeric: true, sensitivity: "base" });
+  const sorted = [...reports];
+  const compareText = (left, right) => collator.compare(left, right);
+  const compareNumberDescending = (left, right) => (right ?? -1) - (left ?? -1);
+  const comparators = {
+    "name-asc": (left, right) => compareText(reportTitle(left), reportTitle(right)),
+    "name-desc": (left, right) => compareText(reportTitle(right), reportTitle(left)),
+    "system-asc": (left, right) => (
+      compareText(left.system.operating_system, right.system.operating_system)
+      || compareText(reportTitle(left), reportTitle(right))
+    ),
+    "memory-desc": (left, right) => (
+      compareNumberDescending(left.system.memory_bytes, right.system.memory_bytes)
+      || compareText(reportTitle(left), reportTitle(right))
+    ),
+    "benchmarks-desc": (left, right) => (
+      compareNumberDescending(left.benchmark_count, right.benchmark_count)
+      || compareText(reportTitle(left), reportTitle(right))
+    ),
+  };
+  return sorted.sort(comparators[order] ?? comparators["name-asc"]);
+}
+
+export function paginateReports(reports, page, pageSize = 20) {
+  const pageCount = Math.max(1, Math.ceil(reports.length / pageSize));
+  const currentPage = Math.min(Math.max(1, page), pageCount);
+  const start = (currentPage - 1) * pageSize;
+  return {
+    reports: reports.slice(start, start + pageSize),
+    currentPage,
+    pageCount,
+  };
+}
+
 export function uniqueValues(reports, selector) {
   return [...new Set(reports.map(selector))].sort((left, right) => left.localeCompare(right, "fr"));
 }
